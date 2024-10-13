@@ -1,10 +1,10 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
 
 public class AbilityController : MonoBehaviour
 {
-    public UnityEvent onAbilityUsed;
+    public event Action<AbilityType> OnAbilityUsed;
     
     private readonly Dictionary<int, AbilityType> _abilityMap = new()
     {
@@ -27,9 +27,9 @@ public class AbilityController : MonoBehaviour
         }
     }
 
-    private void UseAbility(AbilityType action)
+    private void UseAbility(AbilityType abilityType)
     {
-        Debug.Log("Ability used: " + action);
-        onAbilityUsed.Invoke();
+        Debug.Log("Ability used: " + abilityType);
+        OnAbilityUsed?.Invoke(abilityType);
     }
 }

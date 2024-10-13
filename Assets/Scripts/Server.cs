@@ -23,6 +23,8 @@ public class Server : MonoBehaviour, IGameServerAdapter
         }
 
         ApplyEnemyAction();
+
+        ApplyEffects();
     }
 
     private void ApplyPlayerAbilityUsage(AbilityType abilityType)
@@ -58,5 +60,10 @@ public class Server : MonoBehaviour, IGameServerAdapter
     private void ApplyEnemyAction()
     {
         // Логика случайного выбора действия противника и его применения
+    }
+
+    private void ApplyEffects()
+    {
+        
     }
 }
