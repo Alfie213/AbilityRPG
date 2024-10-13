@@ -22,7 +22,7 @@ public class Attack : Ability
 {
     public override AbilityType Type => AbilityType.Attack;
     public override int Cooldown { get; set; } = 0;
-    public int Value { get; private set; } = 8;
+    public int AttackValue { get; private set; } = 8;
 }
 
 public class Barrier : AbilityWithDuration
@@ -30,7 +30,7 @@ public class Barrier : AbilityWithDuration
     public override AbilityType Type => AbilityType.Barrier;
     public override int Cooldown { get; set; } = 4;
     public override int Duration { get; set; } = 2;
-    public int Value { get; private set; } = 5;
+    public int BarrierValue { get; private set; } = 5;
 }
 
 public class Regeneration : AbilityWithDuration
@@ -38,7 +38,7 @@ public class Regeneration : AbilityWithDuration
     public override AbilityType Type => AbilityType.Regeneration;
     public override int Cooldown { get; set; } = 5;
     public override int Duration { get; set; } = 3;
-    public int Value { get; private set; } = 2;
+    public int RegenerationValue { get; private set; } = 2;
 }
 
 public class Fireball : AbilityWithDuration
@@ -46,8 +46,8 @@ public class Fireball : AbilityWithDuration
     public override AbilityType Type => AbilityType.Fireball;
     public override int Cooldown { get; set; } = 6;
     public override int Duration { get; set; } = 5;
-    public int InstantValue { get; private set; } = 2;
-    public int DurationValue { get; private set; } = 1;
+    public int AttackValue { get; private set; } = 2;
+    public int AttackDurationValue { get; private set; } = 1;
 }
 
 public class Cleanse : Ability
