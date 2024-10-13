@@ -1,10 +1,14 @@
+using System;
 using UnityEngine;
 
 public class Client : MonoBehaviour
 {
+    public event Action<GameState> OnGameStateReceived;
+    
     [SerializeField] private AbilityController abilityController;
     
     private IGameServerAdapter _serverAdapter;
+    private GameState _gameState;
 
     private void OnEnable()
     {
@@ -24,13 +28,7 @@ public class Client : MonoBehaviour
     private void SubmitAbilityUsage(AbilityType abilityType)
     {
         _serverAdapter.SubmitAbilityUsage(abilityType);
-        // UpdateUI();
+        _gameState = _serverAdapter.RequestGameState();
+        OnGameStateReceived?.Invoke(_gameState);
     }
-
-    // Обновление интерфейса на основе состояния игры
-    // private void UpdateUI()
-    // {
-    //     GameState state = serverAdapter.GetGameState();
-    //     // Логика обновления интерфейса (полоски здоровья, эффекты и т.д.)
-    // }
 }

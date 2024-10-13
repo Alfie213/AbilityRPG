@@ -5,7 +5,7 @@ public class Server : MonoBehaviour, IGameServerAdapter
 {
     [SerializeField] private Client client;
 
-    public GameState GameState { get; } = new();
+    private GameState _gameState;
 
     private void Start()
     {
@@ -27,25 +27,30 @@ public class Server : MonoBehaviour, IGameServerAdapter
         ApplyEffects();
     }
 
+    public GameState RequestGameState()
+    {
+        return _gameState;
+    }
+
     private void ApplyPlayerAbilityUsage(AbilityType abilityType)
     {
         switch (abilityType)
         {
             case AbilityType.Attack:
-                GameState.EnemyHealth -= new AbilityAttack().AttackValue;
+                _gameState.EnemyHealth -= new AbilityAttack().AttackValue;
                 break;
             case AbilityType.Barrier:
-                GameState.PlayerEffects.Add(new EffectBarrier());
+                _gameState.PlayerEffects.Add(new EffectBarrier());
                 break;
             case AbilityType.Regeneration:
-                GameState.PlayerEffects.Add(new EffectRegeneration());
+                _gameState.PlayerEffects.Add(new EffectRegeneration());
                 break;
             case AbilityType.Fireball:
-                GameState.EnemyHealth -= new AbilityFireball().AttackValue;
-                GameState.EnemyEffects.Add(new EffectBurning());
+                _gameState.EnemyHealth -= new AbilityFireball().AttackValue;
+                _gameState.EnemyEffects.Add(new EffectBurning());
                 break;
             case AbilityType.Cleanse:
-                GameState.PlayerEffects.RemoveAll(ability => ability is EffectBurning);
+                _gameState.PlayerEffects.RemoveAll(ability => ability is EffectBurning);
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(abilityType), abilityType, null);
@@ -54,7 +59,7 @@ public class Server : MonoBehaviour, IGameServerAdapter
 
     private bool CheckGameOver()
     {
-        return GameState.EnemyHealth <= 0;
+        return _gameState.EnemyHealth <= 0;
     }
 
     private void ApplyEnemyAction()
