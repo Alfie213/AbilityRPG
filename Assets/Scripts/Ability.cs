@@ -13,41 +13,35 @@ public abstract class Ability
     public abstract int Cooldown { get; set; }
 }
 
-public abstract class AbilityWithDuration : Ability
+public abstract class AbilityAttack : Ability
 {
-    public abstract int Duration { get; set; }
+    public abstract int AttackValue { get; set; }
 }
 
-public class Attack : Ability
+public class Attack : AbilityAttack
 {
     public override AbilityType Type => AbilityType.Attack;
     public override int Cooldown { get; set; } = 0;
-    public int AttackValue { get; private set; } = 8;
+    public override int AttackValue { get; set; } = 8;
 }
 
-public class Barrier : AbilityWithDuration
+public class Barrier : Ability
 {
     public override AbilityType Type => AbilityType.Barrier;
     public override int Cooldown { get; set; } = 4;
-    public override int Duration { get; set; } = 2;
-    public int BarrierValue { get; private set; } = 5;
 }
 
-public class Regeneration : AbilityWithDuration
+public class Regeneration : Ability
 {
     public override AbilityType Type => AbilityType.Regeneration;
     public override int Cooldown { get; set; } = 5;
-    public override int Duration { get; set; } = 3;
-    public int RegenerationValue { get; private set; } = 2;
 }
 
-public class Fireball : AbilityWithDuration
+public class Fireball : AbilityAttack
 {
     public override AbilityType Type => AbilityType.Fireball;
     public override int Cooldown { get; set; } = 6;
-    public override int Duration { get; set; } = 5;
-    public int AttackValue { get; private set; } = 2;
-    public int AttackDurationValue { get; private set; } = 1;
+    public override int AttackValue { get; set; } = 5;
 }
 
 public class Cleanse : Ability
