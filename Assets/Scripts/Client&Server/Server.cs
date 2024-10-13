@@ -56,6 +56,31 @@ public class Server : MonoBehaviour, IGameServerAdapter
                 throw new ArgumentOutOfRangeException(nameof(abilityType), abilityType, null);
         }
     }
+    
+    private void ApplyEnemyAbilityUsage(AbilityType abilityType)
+    {
+        switch (abilityType)
+        {
+            case AbilityType.Attack:
+                _gameState.PlayerHealth -= new AbilityAttack().AttackValue;
+                break;
+            case AbilityType.Barrier:
+                _gameState.EnemyEffects.Add(new EffectBarrier());
+                break;
+            case AbilityType.Regeneration:
+                _gameState.EnemyEffects.Add(new EffectRegeneration());
+                break;
+            case AbilityType.Fireball:
+                _gameState.PlayerHealth -= new AbilityFireball().AttackValue;
+                _gameState.PlayerEffects.Add(new EffectBurning());
+                break;
+            case AbilityType.Cleanse:
+                _gameState.EnemyEffects.RemoveAll(ability => ability is EffectBurning);
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(abilityType), abilityType, null);
+        }
+    }
 
     private bool CheckGameOver()
     {
@@ -64,7 +89,8 @@ public class Server : MonoBehaviour, IGameServerAdapter
 
     private void ApplyEnemyAction()
     {
-        // Логика случайного выбора действия противника и его применения
+        AbilityType randomAbilityType = AbilityBase.GetRandomAbilityType();
+        ApplyEnemyAbilityUsage(randomAbilityType);
     }
 
     private void ApplyEffects()

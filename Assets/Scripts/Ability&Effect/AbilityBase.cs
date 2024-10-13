@@ -1,3 +1,5 @@
+using System;
+
 public enum AbilityType
 {
     Attack,
@@ -9,6 +11,13 @@ public enum AbilityType
 
 public abstract class AbilityBase
 {
+    private static readonly Random Random = new();
+    public static AbilityType GetRandomAbilityType()
+    {
+        Array values = Enum.GetValues(typeof(AbilityType));
+        return (AbilityType)values.GetValue(Random.Next(values.Length));
+    }
+    
     public abstract AbilityType Type { get; }
     public abstract int Cooldown { get; set; }
 }
