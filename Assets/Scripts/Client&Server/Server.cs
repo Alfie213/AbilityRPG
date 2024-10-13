@@ -95,6 +95,46 @@ public class Server : MonoBehaviour, IGameServerAdapter
 
     private void ApplyEffects()
     {
-        
+        foreach (EffectBase playerEffect in _gameState.PlayerEffects)
+        {
+            switch (playerEffect.Type)
+            {
+                case EffectType.Barrier:
+                    break;
+                case EffectType.Burning:
+                    _gameState.PlayerHealth -= ((EffectBurning)playerEffect).BurningValue;
+                    break;
+                case EffectType.Regeneration:
+                    _gameState.PlayerHealth += ((EffectRegeneration)playerEffect).RegenerationValue;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            playerEffect.CurrentDuration -= 1;
+            if (playerEffect.CurrentDuration <= 0)
+                _gameState.PlayerEffects.Remove(playerEffect);
+        }
+
+        foreach (EffectBase enemyEffect in _gameState.EnemyEffects)
+        {
+            switch (enemyEffect.Type)
+            {
+                case EffectType.Barrier:
+                    break;
+                case EffectType.Burning:
+                    _gameState.EnemyHealth -= ((EffectBurning)enemyEffect).BurningValue;
+                    break;
+                case EffectType.Regeneration:
+                    _gameState.EnemyHealth += ((EffectRegeneration)enemyEffect).RegenerationValue;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            enemyEffect.CurrentDuration -= 1;
+            if (enemyEffect.CurrentDuration <= 0)
+                _gameState.EnemyEffects.Remove(enemyEffect);
+        }
     }
 }
