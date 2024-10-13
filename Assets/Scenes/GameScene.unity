@@ -3412,6 +3412,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 63673b6218d5dcb459e0ba323e38f7ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  abilityController: {fileID: 1151354609}
 --- !u!4 &1151354608
 Transform:
   m_ObjectHideFlags: 0
@@ -3439,9 +3440,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07c6a34bdd749b14abffd07dfdb4ef08, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  onAbilityUsed:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!1 &1213364326
 GameObject:
   m_ObjectHideFlags: 0
