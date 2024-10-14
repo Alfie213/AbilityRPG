@@ -52,7 +52,9 @@ public class Server : MonoBehaviour, IGameServerAdapter
                 break;
             case AbilityType.Fireball:
                 _gameState.EnemyHealth -= new AbilityFireball().AttackValue;
-                _gameState.EnemyEffects.Add(new EffectBurning());
+                EffectBase effectBurning = new EffectBurning();
+                effectBurning.CurrentDuration = effectBurning.Duration;
+                _gameState.EnemyEffects.Add(effectBurning);
                 break;
             case AbilityType.Cleanse:
                 _gameState.PlayerEffects.RemoveAll(ability => ability is EffectBurning);
@@ -82,7 +84,9 @@ public class Server : MonoBehaviour, IGameServerAdapter
                 break;
             case AbilityType.Fireball:
                 _gameState.PlayerHealth -= new AbilityFireball().AttackValue;
-                _gameState.PlayerEffects.Add(new EffectBurning());
+                EffectBase effectBurning = new EffectBurning();
+                effectBurning.CurrentDuration = effectBurning.Duration;
+                _gameState.PlayerEffects.Add(effectBurning);
                 break;
             case AbilityType.Cleanse:
                 _gameState.EnemyEffects.RemoveAll(ability => ability is EffectBurning);

@@ -45,9 +45,9 @@ public class UIGameStateObserver : MonoBehaviour
         {
             GameObject effect = enemyEffect.Type switch
             {
-                EffectType.Barrier => Instantiate(barrierEffectUIPrefab, playerEffectsParent),
-                EffectType.Burning => Instantiate(burningEffectUIPrefab, playerEffectsParent),
-                EffectType.Regeneration => Instantiate(regenerationEffectUIPrefab, playerEffectsParent),
+                EffectType.Barrier => Instantiate(barrierEffectUIPrefab, enemyEffectsParent),
+                EffectType.Burning => Instantiate(burningEffectUIPrefab, enemyEffectsParent),
+                EffectType.Regeneration => Instantiate(regenerationEffectUIPrefab, enemyEffectsParent),
                 _ => throw new ArgumentOutOfRangeException()
             };
             effect.GetComponentInChildren<TextMeshProUGUI>().text = enemyEffect.Duration.ToString();
