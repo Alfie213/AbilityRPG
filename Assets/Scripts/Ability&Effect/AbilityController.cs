@@ -99,12 +99,16 @@ public class AbilityController : MonoBehaviour
         foreach (KeyValuePair<AbilityType,AbilityBase> abilityKeyValuePair in _abilities)
         {
             AbilityBase ability = abilityKeyValuePair.Value;
+
+            if (ability.CurrentCooldown <= 0)
+                return;
+
             ability.CurrentCooldown -= 1;
             
             switch (abilityKeyValuePair.Key)
             {
                 case AbilityType.Attack:
-                    attackButton.GetComponentInChildren<TextMeshProUGUI>().text = ability.CurrentCooldown.ToString();
+                    attackButton.GetComponentInChildren<TextMeshProUGUI>().text = ability.CurrentCooldown > 0 ? ability.CurrentCooldown.ToString() : "Attack";
                     break;
                 case AbilityType.Barrier:
                     barrierButton.GetComponentInChildren<TextMeshProUGUI>().text = ability.CurrentCooldown.ToString();

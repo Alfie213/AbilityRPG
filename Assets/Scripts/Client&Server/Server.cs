@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Server : MonoBehaviour, IGameServerAdapter
@@ -95,6 +96,7 @@ public class Server : MonoBehaviour, IGameServerAdapter
 
     private void ApplyEffects()
     {
+        List<EffectBase> playerEffectsToRemove = new();
         foreach (EffectBase playerEffect in _gameState.PlayerEffects)
         {
             switch (playerEffect.Type)
@@ -113,9 +115,12 @@ public class Server : MonoBehaviour, IGameServerAdapter
 
             playerEffect.CurrentDuration -= 1;
             if (playerEffect.CurrentDuration <= 0)
-                _gameState.PlayerEffects.Remove(playerEffect);
+                playerEffectsToRemove.Add(playerEffect);
         }
+        foreach (EffectBase effect in playerEffectsToRemove)
+            _gameState.PlayerEffects.Remove(effect);
 
+        List<EffectBase> enemyEffectsToRemove = new();
         foreach (EffectBase enemyEffect in _gameState.EnemyEffects)
         {
             switch (enemyEffect.Type)
@@ -134,7 +139,9 @@ public class Server : MonoBehaviour, IGameServerAdapter
 
             enemyEffect.CurrentDuration -= 1;
             if (enemyEffect.CurrentDuration <= 0)
-                _gameState.EnemyEffects.Remove(enemyEffect);
+                enemyEffectsToRemove.Add(enemyEffect);
         }
+        foreach (EffectBase effect in enemyEffectsToRemove)
+            _gameState.EnemyEffects.Remove(effect);
     }
 }
