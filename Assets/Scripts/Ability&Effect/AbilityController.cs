@@ -63,7 +63,6 @@ public class AbilityController : MonoBehaviour
 
     private void UseAbility(AbilityType abilityType)
     {
-        Debug.Log("Ability used: " + abilityType);
         CooldownAbility(abilityType);
         OnAbilityUsed?.Invoke(abilityType);
     }

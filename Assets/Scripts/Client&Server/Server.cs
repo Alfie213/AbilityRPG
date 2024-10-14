@@ -56,6 +56,7 @@ public class Server : MonoBehaviour, IGameServerAdapter
             default:
                 throw new ArgumentOutOfRangeException(nameof(abilityType), abilityType, null);
         }
+        Debug.Log("Player Ability used: " + abilityType);
     }
     
     private void ApplyEnemyAbilityUsage(AbilityType abilityType)
@@ -81,6 +82,7 @@ public class Server : MonoBehaviour, IGameServerAdapter
             default:
                 throw new ArgumentOutOfRangeException(nameof(abilityType), abilityType, null);
         }
+        Debug.Log("Enemy Ability used: " + abilityType);
     }
 
     private bool CheckGameOver()
