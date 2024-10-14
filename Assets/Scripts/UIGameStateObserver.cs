@@ -28,7 +28,7 @@ public class UIGameStateObserver : MonoBehaviour
         ClearEffects();
         playerHealthTMP.text = gameState.PlayerHealth.ToString();
         enemyHealthTMP.text = gameState.EnemyHealth.ToString();
-        
+
         foreach (EffectBase playerEffect in gameState.PlayerEffects)
         {
             GameObject effect = playerEffect.Type switch

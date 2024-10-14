@@ -41,10 +41,14 @@ public class Server : MonoBehaviour, IGameServerAdapter
                 _gameState.EnemyHealth -= new AbilityAttack().AttackValue;
                 break;
             case AbilityType.Barrier:
-                _gameState.PlayerEffects.Add(new EffectBarrier());
+                EffectBase effectBarrier = new EffectBarrier();
+                effectBarrier.CurrentDuration = effectBarrier.Duration;
+                _gameState.PlayerEffects.Add(effectBarrier);
                 break;
             case AbilityType.Regeneration:
-                _gameState.PlayerEffects.Add(new EffectRegeneration());
+                EffectBase effectRegeneration = new EffectRegeneration();
+                effectRegeneration.CurrentDuration = effectRegeneration.Duration;
+                _gameState.PlayerEffects.Add(effectRegeneration);
                 break;
             case AbilityType.Fireball:
                 _gameState.EnemyHealth -= new AbilityFireball().AttackValue;
@@ -67,10 +71,14 @@ public class Server : MonoBehaviour, IGameServerAdapter
                 _gameState.PlayerHealth -= new AbilityAttack().AttackValue;
                 break;
             case AbilityType.Barrier:
-                _gameState.EnemyEffects.Add(new EffectBarrier());
+                EffectBase effectBarrier = new EffectBarrier();
+                effectBarrier.CurrentDuration = effectBarrier.Duration;
+                _gameState.EnemyEffects.Add(effectBarrier);
                 break;
             case AbilityType.Regeneration:
-                _gameState.EnemyEffects.Add(new EffectRegeneration());
+                EffectBase effectRegeneration = new EffectRegeneration();
+                effectRegeneration.CurrentDuration = effectRegeneration.Duration;
+                _gameState.EnemyEffects.Add(effectRegeneration);
                 break;
             case AbilityType.Fireball:
                 _gameState.PlayerHealth -= new AbilityFireball().AttackValue;
