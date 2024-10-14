@@ -105,7 +105,7 @@ public class AbilityController : MonoBehaviour
         {
             AbilityBase ability = abilityKeyValuePair.Value;
 
-            if (ability.CurrentCooldown <= 0)
+            if (ability.CurrentCooldown < 0)
                 return;
 
             ability.CurrentCooldown -= 1;
