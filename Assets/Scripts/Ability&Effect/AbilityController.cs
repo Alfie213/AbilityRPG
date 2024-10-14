@@ -33,6 +33,12 @@ public class AbilityController : MonoBehaviour
         { AbilityType.Cleanse, new AbilityCleanse() }
     };
 
+    private const string AttackButtonTMP = "Attack";
+    private const string BarrierButtonTMP = "Barrier";
+    private const string RegenerationButtonTMP = "Regeneration";
+    private const string FireballButtonTMP = "Fireball";
+    private const string CleanseButtonTMP = "Cleanse";
+
     private void OnEnable()
     {
         client.OnGameStateReceived += ReduceCooldown;
@@ -108,19 +114,19 @@ public class AbilityController : MonoBehaviour
             switch (abilityKeyValuePair.Key)
             {
                 case AbilityType.Attack:
-                    attackButton.GetComponentInChildren<TextMeshProUGUI>().text = ability.CurrentCooldown > 0 ? ability.CurrentCooldown.ToString() : "Attack";
+                    attackButton.GetComponentInChildren<TextMeshProUGUI>().text = ability.CurrentCooldown > 0 ? ability.CurrentCooldown.ToString() : AttackButtonTMP;
                     break;
                 case AbilityType.Barrier:
-                    barrierButton.GetComponentInChildren<TextMeshProUGUI>().text = ability.CurrentCooldown.ToString();
+                    barrierButton.GetComponentInChildren<TextMeshProUGUI>().text = ability.CurrentCooldown > 0 ? ability.CurrentCooldown.ToString() : BarrierButtonTMP;
                     break;
                 case AbilityType.Regeneration:
-                    regenerationButton.GetComponentInChildren<TextMeshProUGUI>().text = ability.CurrentCooldown.ToString();
+                    regenerationButton.GetComponentInChildren<TextMeshProUGUI>().text = ability.CurrentCooldown > 0 ? ability.CurrentCooldown.ToString() : RegenerationButtonTMP;
                     break;
                 case AbilityType.Fireball:
-                    fireballButton.GetComponentInChildren<TextMeshProUGUI>().text = ability.CurrentCooldown.ToString();
+                    fireballButton.GetComponentInChildren<TextMeshProUGUI>().text = ability.CurrentCooldown > 0 ? ability.CurrentCooldown.ToString() : FireballButtonTMP;
                     break;
                 case AbilityType.Cleanse:
-                    cleanseButton.GetComponentInChildren<TextMeshProUGUI>().text = ability.CurrentCooldown.ToString();
+                    cleanseButton.GetComponentInChildren<TextMeshProUGUI>().text = ability.CurrentCooldown > 0 ? ability.CurrentCooldown.ToString() : CleanseButtonTMP;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(abilityKeyValuePair), abilityKeyValuePair, null);
