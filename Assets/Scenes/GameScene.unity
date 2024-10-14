@@ -2370,8 +2370,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1151354608}
-  - component: {fileID: 1151354609}
   - component: {fileID: 1151354607}
+  - component: {fileID: 1151354611}
+  - component: {fileID: 1151354609}
   - component: {fileID: 1151354610}
   m_Layer: 0
   m_Name: Scripts
@@ -2446,6 +2447,19 @@ MonoBehaviour:
   barrierEffectUIPrefab: {fileID: 5381756725898087762, guid: 20591b2d094b30c439da1c918f05ab3a, type: 3}
   burningEffectUIPrefab: {fileID: 5381756725898087762, guid: d5e6a57274002e34da307e32a76fdad4, type: 3}
   regenerationEffectUIPrefab: {fileID: 5381756725898087762, guid: 4d4218f4cce6e6844ac2c6d095702084, type: 3}
+--- !u!114 &1151354611
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1151354605}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 481f60076d8a8034f8600707c31297bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  client: {fileID: 1151354607}
 --- !u!1 &1164975686
 GameObject:
   m_ObjectHideFlags: 0
