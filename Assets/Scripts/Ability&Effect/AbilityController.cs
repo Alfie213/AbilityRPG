@@ -8,6 +8,7 @@ public class AbilityController : MonoBehaviour
 {
     public event Action<AbilityType> OnAbilityUsed;
 
+    [SerializeField] private Client client;
     [SerializeField] private Button attackButton;
     [SerializeField] private Button barrierButton;
     [SerializeField] private Button regenerationButton;
@@ -31,6 +32,16 @@ public class AbilityController : MonoBehaviour
         { AbilityType.Fireball, new AbilityFireball() },
         { AbilityType.Cleanse, new AbilityCleanse() }
     };
+
+    private void OnEnable()
+    {
+        client.OnGameStateReceived += ReduceCooldown;
+    }
+
+    private void OnDisable()
+    {
+        client.OnGameStateReceived -= ReduceCooldown;
+    }
 
     public void UseAbilityByIndex(int abilityIndex)
     {
@@ -80,6 +91,60 @@ public class AbilityController : MonoBehaviour
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(abilityType), abilityType, null);
+        }
+    }
+
+    private void ReduceCooldown(GameState _)
+    {
+        foreach (KeyValuePair<AbilityType,AbilityBase> abilityKeyValuePair in _abilities)
+        {
+            AbilityBase ability = abilityKeyValuePair.Value;
+            ability.CurrentCooldown -= 1;
+            
+            switch (abilityKeyValuePair.Key)
+            {
+                case AbilityType.Attack:
+                    attackButton.GetComponentInChildren<TextMeshProUGUI>().text = ability.CurrentCooldown.ToString();
+                    break;
+                case AbilityType.Barrier:
+                    barrierButton.GetComponentInChildren<TextMeshProUGUI>().text = ability.CurrentCooldown.ToString();
+                    break;
+                case AbilityType.Regeneration:
+                    regenerationButton.GetComponentInChildren<TextMeshProUGUI>().text = ability.CurrentCooldown.ToString();
+                    break;
+                case AbilityType.Fireball:
+                    fireballButton.GetComponentInChildren<TextMeshProUGUI>().text = ability.CurrentCooldown.ToString();
+                    break;
+                case AbilityType.Cleanse:
+                    cleanseButton.GetComponentInChildren<TextMeshProUGUI>().text = ability.CurrentCooldown.ToString();
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(abilityKeyValuePair), abilityKeyValuePair, null);
+            }
+
+            if (ability.CurrentCooldown > 0)
+                return;
+            
+            switch (abilityKeyValuePair.Key)
+            {
+                case AbilityType.Attack:
+                    attackButton.interactable = true;
+                    break;
+                case AbilityType.Barrier:
+                    barrierButton.interactable = true;
+                    break;
+                case AbilityType.Regeneration:
+                    regenerationButton.interactable = true;
+                    break;
+                case AbilityType.Fireball:
+                    fireballButton.interactable = true;
+                    break;
+                case AbilityType.Cleanse:
+                    cleanseButton.interactable = true;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(abilityKeyValuePair), abilityKeyValuePair, null);
+            }
         }
     }
 }

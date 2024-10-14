@@ -2420,6 +2420,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07c6a34bdd749b14abffd07dfdb4ef08, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  client: {fileID: 1151354607}
+  attackButton: {fileID: 216603360}
+  barrierButton: {fileID: 17526016}
+  regenerationButton: {fileID: 1615958629}
+  fireballButton: {fileID: 1146874519}
+  cleanseButton: {fileID: 838549590}
 --- !u!114 &1151354610
 MonoBehaviour:
   m_ObjectHideFlags: 0
