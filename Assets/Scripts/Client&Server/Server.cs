@@ -5,7 +5,7 @@ public class Server : MonoBehaviour, IGameServerAdapter
 {
     [SerializeField] private Client client;
 
-    private GameState _gameState;
+    private readonly GameState _gameState = new();
 
     private void Start()
     {
