@@ -20,6 +20,7 @@ public abstract class AbilityBase
     
     public abstract AbilityType Type { get; }
     public abstract int Cooldown { get; set; }
+    public int CurrentCooldown { get; set; }
 }
 
 public abstract class AbilityAttackBase : AbilityBase
