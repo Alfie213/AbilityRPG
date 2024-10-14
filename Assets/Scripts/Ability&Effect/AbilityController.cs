@@ -106,7 +106,7 @@ public class AbilityController : MonoBehaviour
             AbilityBase ability = abilityKeyValuePair.Value;
 
             if (ability.CurrentCooldown < 0)
-                return;
+                break;
 
             ability.CurrentCooldown -= 1;
             
@@ -132,7 +132,7 @@ public class AbilityController : MonoBehaviour
             }
 
             if (ability.CurrentCooldown > 0)
-                return;
+                break;
             
             switch (abilityKeyValuePair.Key)
             {
