@@ -28,7 +28,7 @@ public class UIGameStateObserver : MonoBehaviour
         ClearEffects();
         playerHealthTMP.text = gameState.PlayerHealth.ToString();
         enemyHealthTMP.text = gameState.EnemyHealth.ToString();
-
+        Debug.Log(gameState.PlayerEffects.Count);
         foreach (EffectBase playerEffect in gameState.PlayerEffects)
         {
             GameObject effect = playerEffect.Type switch
@@ -38,7 +38,7 @@ public class UIGameStateObserver : MonoBehaviour
                 EffectType.Regeneration => Instantiate(regenerationEffectUIPrefab, playerEffectsParent),
                 _ => throw new ArgumentOutOfRangeException()
             };
-            effect.GetComponentInChildren<TextMeshProUGUI>().text = playerEffect.Duration.ToString();
+            effect.GetComponentInChildren<TextMeshProUGUI>().text = playerEffect.CurrentDuration.ToString();
         }
         
         foreach (EffectBase enemyEffect in gameState.EnemyEffects)
@@ -50,7 +50,7 @@ public class UIGameStateObserver : MonoBehaviour
                 EffectType.Regeneration => Instantiate(regenerationEffectUIPrefab, enemyEffectsParent),
                 _ => throw new ArgumentOutOfRangeException()
             };
-            effect.GetComponentInChildren<TextMeshProUGUI>().text = enemyEffect.Duration.ToString();
+            effect.GetComponentInChildren<TextMeshProUGUI>().text = enemyEffect.CurrentDuration.ToString();
         }
     }
 
