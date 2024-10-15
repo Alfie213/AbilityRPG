@@ -1,8 +1,9 @@
 using System;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class UIGameStateObserver : MonoBehaviour
+public class GameStateUIUpdater : MonoBehaviour
 {
     [SerializeField] private Client client;
     [SerializeField] private TextMeshProUGUI playerHealthTMP;
@@ -32,6 +33,7 @@ public class UIGameStateObserver : MonoBehaviour
                 UpdateGameStateUI(gameState);
                 break;
             case GameStateType.GameOver:
+                UpdateGameStateUI(gameState);
                 ShowGameOverLayout();
                 break;
             default:
@@ -39,12 +41,31 @@ public class UIGameStateObserver : MonoBehaviour
         }
     }
 
-    private void UpdateGameStateUI(GameState gameState)
+    private void UpdateGameStateUI(GameState gameState) // Requires optimization to minimize the calls to Destroy and Instantiate.
     {
-        ClearEffects();
+        DisplayHealth(gameState);
+        DisplayEffects(gameState);
+        DisplayEnemyAbilities(gameState);
+    }
+
+    private void ClearEffects() // Requires optimization to minimize the calls to Destroy and Instantiate.
+    {
+        foreach (Transform playerEffect in playerEffectsParent)
+            Destroy(playerEffect.gameObject);
+        foreach (Transform enemyEffect in enemyEffectsParent)
+            Destroy(enemyEffect.gameObject);
+    }
+
+    private void DisplayHealth(GameState gameState)
+    {
         playerHealthTMP.text = gameState.PlayerHealth.ToString();
         enemyHealthTMP.text = gameState.EnemyHealth.ToString();
-        Debug.Log(gameState.PlayerEffects.Count);
+    }
+
+    private void DisplayEffects(GameState gameState) // Requires optimization to minimize the calls to Destroy and Instantiate.
+    {
+        ClearEffects();
+        
         foreach (EffectBase playerEffect in gameState.PlayerEffects)
         {
             GameObject effect = playerEffect.Type switch
@@ -70,14 +91,17 @@ public class UIGameStateObserver : MonoBehaviour
         }
     }
 
-    private void ClearEffects()
+    private void DisplayEnemyAbilities(GameState gameState)
     {
-        foreach (Transform playerEffect in playerEffectsParent)
-            Destroy(playerEffect.gameObject);
-        foreach (Transform enemyEffect in enemyEffectsParent)
-            Destroy(enemyEffect.gameObject);
+        foreach (KeyValuePair<AbilityType,AbilityBase> enemyAbilityKeyValuePair in gameState.EnemyAbilities)
+        {
+            switch (expression)
+            {
+                
+            }
+        }
     }
-
+    
     private void ShowGameOverLayout()
     {
         gameOverLayout.SetActive(true);

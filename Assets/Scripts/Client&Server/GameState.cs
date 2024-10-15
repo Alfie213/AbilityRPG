@@ -13,4 +13,13 @@ public class GameState
     public readonly List<EffectBase> PlayerEffects = new();
     public readonly List<EffectBase> EnemyEffects = new();
     public GameStateType CurrentState;
+    
+    public readonly Dictionary<AbilityType, AbilityBase> EnemyAbilities = new()
+    {
+        { AbilityType.Attack, new AbilityAttack() },
+        { AbilityType.Barrier, new AbilityBarrier() },
+        { AbilityType.Regeneration, new AbilityRegeneration() },
+        { AbilityType.Fireball, new AbilityFireball() },
+        { AbilityType.Cleanse, new AbilityCleanse() }
+    };
 }

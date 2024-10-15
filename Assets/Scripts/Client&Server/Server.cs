@@ -1,9 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using Random = System.Random;
 
 public class Server : MonoBehaviour, IGameServerAdapter
 {
+    private static readonly Random Random = new();
+    
     [SerializeField] private Client client;
 
     private readonly GameState _gameState = new();
@@ -117,8 +121,18 @@ public class Server : MonoBehaviour, IGameServerAdapter
 
     private void ApplyEnemyAction()
     {
-        AbilityType randomAbilityType = AbilityBase.GetRandomAbilityType();
-        ApplyEnemyAbilityUsage(randomAbilityType);
+        var availableAbilities = _gameState.EnemyAbilities
+            .Where(entry => entry.Value.CurrentCooldown == 0)
+            .Select(entry => entry.Key)
+            .ToList();
+        
+        if (availableAbilities.Count > 0)
+        {
+            AbilityType randomAbilityType = availableAbilities[Random.Next(availableAbilities.Count)];
+            ApplyEnemyAbilityUsage(randomAbilityType);
+        }
+        else
+            throw new NotImplementedException();
     }
 
     private void ApplyEffects()
