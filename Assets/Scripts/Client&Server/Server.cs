@@ -8,6 +8,11 @@ public class Server : MonoBehaviour, IGameServerAdapter
 
     private readonly GameState _gameState = new();
 
+    private void Awake()
+    {
+        _gameState.CurrentState = GameStateType.Playing;
+    }
+
     private void Start()
     {
         client.InitializeServerAdapter(this);
@@ -16,16 +21,19 @@ public class Server : MonoBehaviour, IGameServerAdapter
     public void SubmitAbilityUsage(AbilityType abilityType)
     {
         ApplyPlayerAbilityUsage(abilityType);
-        
+
         if (CheckGameOver())
-        {
-            Debug.Log("GameOver");
             return;
-        }
 
         ApplyEnemyAction();
+        
+        if (CheckGameOver())
+            return;
 
         ApplyEffects();
+        
+        if (CheckGameOver())
+            return;
     }
 
     public GameState RequestGameState()
@@ -99,7 +107,12 @@ public class Server : MonoBehaviour, IGameServerAdapter
 
     private bool CheckGameOver()
     {
-        return _gameState.EnemyHealth <= 0;
+        if (!(_gameState.PlayerHealth <= 0 || _gameState.EnemyHealth <= 0))
+            return false;
+        
+        _gameState.CurrentState = GameStateType.GameOver;
+        Debug.Log("GameOver");
+        return true;
     }
 
     private void ApplyEnemyAction()

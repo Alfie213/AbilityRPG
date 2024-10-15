@@ -12,18 +12,34 @@ public class UIGameStateObserver : MonoBehaviour
     [SerializeField] private GameObject barrierEffectUIPrefab;
     [SerializeField] private GameObject burningEffectUIPrefab;
     [SerializeField] private GameObject regenerationEffectUIPrefab;
+    [SerializeField] private GameObject gameOverLayout;
 
     private void OnEnable()
     {
-        client.OnGameStateReceived += UpdateUI;
+        client.OnGameStateReceived += Handle_OnGameStateReceived;
     }
 
     private void OnDisable()
     {
-        client.OnGameStateReceived -= UpdateUI;
+        client.OnGameStateReceived -= Handle_OnGameStateReceived;
     }
 
-    private void UpdateUI(GameState gameState)
+    private void Handle_OnGameStateReceived(GameState gameState)
+    {
+        switch (gameState.CurrentState)
+        {
+            case GameStateType.Playing:
+                UpdateGameStateUI(gameState);
+                break;
+            case GameStateType.GameOver:
+                ShowGameOverLayout();
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+    }
+
+    private void UpdateGameStateUI(GameState gameState)
     {
         ClearEffects();
         playerHealthTMP.text = gameState.PlayerHealth.ToString();
@@ -60,5 +76,10 @@ public class UIGameStateObserver : MonoBehaviour
             Destroy(playerEffect.gameObject);
         foreach (Transform enemyEffect in enemyEffectsParent)
             Destroy(enemyEffect.gameObject);
+    }
+
+    private void ShowGameOverLayout()
+    {
+        gameOverLayout.SetActive(true);
     }
 }
