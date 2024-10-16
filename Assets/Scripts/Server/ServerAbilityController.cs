@@ -76,20 +76,20 @@ public class ServerAbilityController
                 break;
 
             case AbilityType.Barrier:
-                AddEffect(new EffectBarrier(), gameState.PlayerEffects);
+                AddEffect(new EffectBarrier(), gameState.EnemyEffects);
                 break;
 
             case AbilityType.Regeneration:
-                AddEffect(new EffectRegeneration(), gameState.PlayerEffects);
+                AddEffect(new EffectRegeneration(), gameState.EnemyEffects);
                 break;
 
             case AbilityType.Fireball:
                 ApplyPlayerDamage(new AbilityFireball().AttackValue, gameState);
-                AddEffect(new EffectBurning(), gameState.EnemyEffects);
+                AddEffect(new EffectBurning(), gameState.PlayerEffects);
                 break;
 
             case AbilityType.Cleanse:
-                gameState.PlayerEffects.RemoveAll(ability => ability is EffectBurning);
+                gameState.EnemyEffects.RemoveAll(ability => ability is EffectBurning);
                 break;
 
             default:
