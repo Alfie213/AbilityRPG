@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using R3;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -9,38 +10,63 @@ using Random = System.Random;
 public class ServerAbilityController
 {
     private static readonly Random Random = new();
+
+    private void AddAndTrackEffectExpiring(AbilityBase ability, EffectBase effect, Player player)
+    {
+        player.AddEffect(effect);
+
+        Observable.Merge(
+            effect.CurrentDuration.Where(duration => duration <= 0),
+            effect is EffectBarrier barrier
+                ? barrier.CurrentBarrier.Where(value => value <= 0)
+                : Observable.Empty<int>()
+        ).Subscribe(_ =>
+        {
+            player.RemoveEffect(effect);
+            CooldownAbility(ability);
+        });
+    }
+
+    private void CooldownAbility(AbilityBase ability)
+    {
+        ability.CurrentCooldown = ability.MaxCooldown;
+    }
     
     public bool TrySubmitPlayerAbilityUsage(GameState gameState, AbilityType abilityType)
     {
-        if (gameState.Player.Abilities[abilityType].CurrentCooldown > 0)
+        AbilityBase ability = gameState.Player.Abilities[abilityType];
+        
+        if (ability.CurrentCooldown > 0)
             return false;
         
-        CooldownAbility(gameState.Player.Abilities[abilityType]);
-
-        switch (abilityType)
+        switch (ability.Type)
         {
             case AbilityType.Attack:
                 ApplyPlayerDamage(new AbilityAttack().AttackValue, gameState);
+                CooldownAbility(ability);
                 break;
 
             case AbilityType.Barrier:
                 EffectBarrier effectBarrier = new EffectBarrier();
-                effectBarrier.CurrentBarrierValue = effectBarrier.MaxBarrierValue;
-                gameState.Player.AddEffect(effectBarrier);
+                effectBarrier.CurrentBarrier.Value = effectBarrier.MaxBarrierValue;
+                AddAndTrackEffectExpiring(ability, effectBarrier, gameState.Player);
                 break;
 
             case AbilityType.Regeneration:
-                gameState.Player.AddEffect(new EffectRegeneration());
+                EffectRegeneration effectRegeneration = new EffectRegeneration();
+                AddAndTrackEffectExpiring(ability, effectRegeneration, gameState.Player);
                 break;
 
             case AbilityType.Fireball:
                 ApplyPlayerDamage(new AbilityFireball().AttackValue, gameState);
-                gameState.Enemy.AddEffect(new EffectBurning());
+                EffectBurning effectBurning = new EffectBurning();
+                AddAndTrackEffectExpiring(ability, effectBurning, gameState.Enemy);
                 break;
 
             case AbilityType.Cleanse:
-                EffectBase effectBurning = gameState.Player.Effects.Find(ability => ability is EffectBurning);
-                gameState.Player.RemoveEffect(effectBurning);
+                EffectBase activeEffectBurning = gameState.Player.Effects.Find(burning => burning is EffectBurning);
+                gameState.Player.RemoveEffect(activeEffectBurning);
+                CooldownAbility(ability);
                 break;
 
             default:
@@ -70,8 +96,6 @@ public class ServerAbilityController
     
     private void SubmitEnemyAbilityUsage(GameState gameState, AbilityType abilityType)
     {
-        CooldownAbility(gameState.Enemy.Abilities[abilityType]);
-        
         switch (abilityType)
         {
             case AbilityType.Attack:
@@ -80,7 +104,7 @@ public class ServerAbilityController
 
             case AbilityType.Barrier:
                 EffectBarrier effectBarrier = new EffectBarrier();
-                effectBarrier.CurrentBarrierValue = effectBarrier.MaxBarrierValue;
+                effectBarrier.CurrentBarrier.Value = effectBarrier.MaxBarrierValue;
                 gameState.Enemy.AddEffect(effectBarrier);
                 break;
 
@@ -104,12 +128,7 @@ public class ServerAbilityController
         
         Debug.Log("<color=red>Enemy</color> Ability used: " + abilityType);
     }
-    
-    private void CooldownAbility(AbilityBase ability)
-    {
-        ability.CurrentCooldown = ability.MaxCooldown;
-    }
-        
+
     private void ApplyPlayerDamage(int attackValue, GameState gameState)
     {
         ApplyDamage(attackValue, gameState.Enemy.Effects, gameState.Enemy);
@@ -126,7 +145,7 @@ public class ServerAbilityController
 
         if (effectBarrier != null)
         {
-            int damage = attackValue - effectBarrier.CurrentBarrierValue;
+            int damage = attackValue - effectBarrier.CurrentBarrier.Value;
             if (damage >= 0)
             {
                 player.ApplyDamage(damage);
@@ -134,7 +153,7 @@ public class ServerAbilityController
             }
             else
             {
-                effectBarrier.CurrentBarrierValue = damage;
+                effectBarrier.CurrentBarrier.Value = damage;
             }
         }
         else

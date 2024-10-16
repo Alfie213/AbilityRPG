@@ -1,3 +1,5 @@
+using R3;
+
 public enum EffectType
 {
     Barrier,
@@ -9,7 +11,7 @@ public abstract class EffectBase
 {
     public abstract EffectType Type { get; }
     public abstract int MaxDuration { get; }
-    public int CurrentDuration { get; set; }
+    public readonly ReactiveProperty<int> CurrentDuration = new();
 }
 
 public class EffectBarrier : EffectBase
@@ -17,7 +19,7 @@ public class EffectBarrier : EffectBase
     public override EffectType Type => EffectType.Barrier;
     public override int MaxDuration => 2;
     public int MaxBarrierValue => 5;
-    public int CurrentBarrierValue { get; set; }
+    public readonly ReactiveProperty<int> CurrentBarrier = new();
 }
 
 public class EffectBurning : EffectBase
