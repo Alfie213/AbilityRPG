@@ -17,58 +17,29 @@ public class ServerAbilityController
         
         CooldownAbility(gameState.PlayerAbilities[abilityType]);
 
-        EffectBarrier effectBarrier;
         switch (abilityType)
         {
             case AbilityType.Attack:
-                effectBarrier = (EffectBarrier)gameState.EnemyEffects.Find(effect => effect is EffectBarrier);
-                if (effectBarrier != null)
-                {
-                    int damage = new AbilityAttack().AttackValue - effectBarrier.CurrentBarrierValue;
-                    if (damage >= 0)
-                    {
-                        gameState.EnemyHealth -= damage;
-                        gameState.EnemyEffects.Remove(effectBarrier);
-                    }
-                    else
-                        effectBarrier.CurrentBarrierValue = damage;
-                }
-                else
-                    gameState.EnemyHealth -= new AbilityAttack().AttackValue;
+                ApplyPlayerDamage(new AbilityAttack().AttackValue, gameState);
                 break;
+
             case AbilityType.Barrier:
-                EffectBase newEffectBarrier = new EffectBarrier();
-                newEffectBarrier.CurrentDuration = newEffectBarrier.MaxDuration;
-                gameState.PlayerEffects.Add(newEffectBarrier);
+                AddEffect(new EffectBarrier(), gameState.PlayerEffects);
                 break;
+
             case AbilityType.Regeneration:
-                EffectBase effectRegeneration = new EffectRegeneration();
-                effectRegeneration.CurrentDuration = effectRegeneration.MaxDuration;
-                gameState.PlayerEffects.Add(effectRegeneration);
+                AddEffect(new EffectRegeneration(), gameState.PlayerEffects);
                 break;
+
             case AbilityType.Fireball:
-                effectBarrier = (EffectBarrier)gameState.EnemyEffects.Find(effect => effect is EffectBarrier);
-                if (effectBarrier != null)
-                {
-                    int damage = new AbilityFireball().AttackValue - effectBarrier.CurrentBarrierValue;
-                    if (damage >= 0)
-                    {
-                        gameState.EnemyHealth -= damage;
-                        gameState.EnemyEffects.Remove(effectBarrier);
-                    }
-                    else
-                        effectBarrier.CurrentBarrierValue = damage;
-                }
-                else
-                    gameState.EnemyHealth -= new AbilityFireball().AttackValue;
-                
-                EffectBase effectBurning = new EffectBurning();
-                effectBurning.CurrentDuration = effectBurning.MaxDuration;
-                gameState.EnemyEffects.Add(effectBurning);
+                ApplyPlayerDamage(new AbilityFireball().AttackValue, gameState);
+                AddEffect(new EffectBurning(), gameState.EnemyEffects);
                 break;
+
             case AbilityType.Cleanse:
                 gameState.PlayerEffects.RemoveAll(ability => ability is EffectBurning);
                 break;
+
             default:
                 throw new ArgumentOutOfRangeException(nameof(abilityType), abilityType, null);
         }
@@ -101,27 +72,26 @@ public class ServerAbilityController
         switch (abilityType)
         {
             case AbilityType.Attack:
-                gameState.PlayerHealth -= new AbilityAttack().AttackValue;
+                ApplyEnemyDamage(new AbilityAttack().AttackValue, gameState);
                 break;
+
             case AbilityType.Barrier:
-                EffectBase effectBarrier = new EffectBarrier();
-                effectBarrier.CurrentDuration = effectBarrier.MaxDuration;
-                gameState.EnemyEffects.Add(effectBarrier);
+                AddEffect(new EffectBarrier(), gameState.PlayerEffects);
                 break;
+
             case AbilityType.Regeneration:
-                EffectBase effectRegeneration = new EffectRegeneration();
-                effectRegeneration.CurrentDuration = effectRegeneration.MaxDuration;
-                gameState.EnemyEffects.Add(effectRegeneration);
+                AddEffect(new EffectRegeneration(), gameState.PlayerEffects);
                 break;
+
             case AbilityType.Fireball:
-                gameState.PlayerHealth -= new AbilityFireball().AttackValue;
-                EffectBase effectBurning = new EffectBurning();
-                effectBurning.CurrentDuration = effectBurning.MaxDuration;
-                gameState.PlayerEffects.Add(effectBurning);
+                ApplyPlayerDamage(new AbilityFireball().AttackValue, gameState);
+                AddEffect(new EffectBurning(), gameState.EnemyEffects);
                 break;
+
             case AbilityType.Cleanse:
-                gameState.EnemyEffects.RemoveAll(ability => ability is EffectBurning);
+                gameState.PlayerEffects.RemoveAll(ability => ability is EffectBurning);
                 break;
+
             default:
                 throw new ArgumentOutOfRangeException(nameof(abilityType), abilityType, null);
         }
@@ -132,6 +102,45 @@ public class ServerAbilityController
     private void CooldownAbility(AbilityBase ability)
     {
         ability.CurrentCooldown = ability.MaxCooldown;
+    }
+        
+    private void ApplyPlayerDamage(int attackValue, GameState gameState)
+    {
+        ApplyDamage(attackValue, gameState.EnemyEffects, ref gameState.EnemyHealth);
+    }
+
+    private void ApplyEnemyDamage(int attackValue, GameState gameState)
+    {
+        ApplyDamage(attackValue, gameState.PlayerEffects, ref gameState.PlayerHealth);
+    }
+    
+    private void ApplyDamage(int attackValue, List<EffectBase> effects, ref int health)
+    {
+        var effectBarrier = (EffectBarrier)effects.Find(effect => effect is EffectBarrier);
+
+        if (effectBarrier != null)
+        {
+            int damage = attackValue - effectBarrier.CurrentBarrierValue;
+            if (damage >= 0)
+            {
+                health -= damage;
+                effects.Remove(effectBarrier);
+            }
+            else
+            {
+                effectBarrier.CurrentBarrierValue = damage;
+            }
+        }
+        else
+        {
+            health -= attackValue;
+        }
+    }
+
+    private void AddEffect(EffectBase effect, List<EffectBase> effectsList)
+    {
+        effect.CurrentDuration = effect.MaxDuration;
+        effectsList.Add(effect);
     }
 
     public void ReduceCurrentCooldown(GameState gameState)
