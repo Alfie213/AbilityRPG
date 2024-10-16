@@ -33,8 +33,8 @@ public class Server : MonoBehaviour, IGameServerAdapter
 
     public void SubmitAbilityUsage(AbilityType abilityType)
     {
-        Debug.Log($"Player: {_gameState.Player.Health}");
-        Debug.Log($"Enemy: {_gameState.Enemy.Health}");
+        // Debug.Log($"Player: {_gameState.Player.Health}");
+        // Debug.Log($"Enemy: {_gameState.Enemy.Health}");
         
         if (!_serverAbilityController.TrySubmitPlayerAbilityUsage(_gameState, abilityType))
         {
