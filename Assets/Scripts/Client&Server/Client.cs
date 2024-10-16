@@ -4,20 +4,20 @@ using UnityEngine;
 public class Client : MonoBehaviour
 {
     public event Action<GameState> OnGameStateReceived;
-    
-    [SerializeField] private AbilityController abilityController;
+
+    [SerializeField] private ClientAbilityController clientAbilityController;
     
     private IGameServerAdapter _serverAdapter;
     private GameState _gameState;
 
     private void OnEnable()
     {
-        abilityController.OnAbilityUsed += SubmitAbilityUsage;
+        clientAbilityController.OnAbilityUsed += SubmitAbilityUsage;
     }
 
     private void OnDisable()
     {
-        abilityController.OnAbilityUsed -= SubmitAbilityUsage;
+        clientAbilityController.OnAbilityUsed -= SubmitAbilityUsage;
     }
 
     public void InitializeServerAdapter(IGameServerAdapter serverAdapter)

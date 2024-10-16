@@ -2,18 +2,35 @@ using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameStateUIUpdater : MonoBehaviour
 {
     [SerializeField] private Client client;
+    [SerializeField] private GameObject gameOverLayout;
+    
+    [Header("Health")]
     [SerializeField] private TextMeshProUGUI playerHealthTMP;
     [SerializeField] private TextMeshProUGUI enemyHealthTMP;
+    
+    [Header("EnemyAbilities")] // ClientAbilityView displays the player's abilities.
+    [SerializeField] private Button enemyAttackButton;
+    [SerializeField] private Button enemyBarrierButton;
+    [SerializeField] private Button enemyRegenerationButton;
+    [SerializeField] private Button enemyFireballButton;
+    [SerializeField] private Button enemyCleanseButton;
+    private const string AttackButtonTMP = "Attack";
+    private const string BarrierButtonTMP = "Barrier";
+    private const string RegenerationButtonTMP = "Regeneration";
+    private const string FireballButtonTMP = "Fireball";
+    private const string CleanseButtonTMP = "Cleanse";
+    
+    [Header("Effects")]
     [SerializeField] private Transform playerEffectsParent;
     [SerializeField] private Transform enemyEffectsParent;
     [SerializeField] private GameObject barrierEffectUIPrefab;
     [SerializeField] private GameObject burningEffectUIPrefab;
     [SerializeField] private GameObject regenerationEffectUIPrefab;
-    [SerializeField] private GameObject gameOverLayout;
 
     private void OnEnable()
     {
@@ -44,8 +61,8 @@ public class GameStateUIUpdater : MonoBehaviour
     private void UpdateGameStateUI(GameState gameState) // Requires optimization to minimize the calls to Destroy and Instantiate.
     {
         DisplayHealth(gameState);
-        DisplayEffects(gameState);
         DisplayEnemyAbilities(gameState);
+        DisplayAllEffects(gameState);
     }
 
     private void ClearEffects() // Requires optimization to minimize the calls to Destroy and Instantiate.
@@ -62,7 +79,49 @@ public class GameStateUIUpdater : MonoBehaviour
         enemyHealthTMP.text = gameState.EnemyHealth.ToString();
     }
 
-    private void DisplayEffects(GameState gameState) // Requires optimization to minimize the calls to Destroy and Instantiate.
+    private void DisplayEnemyAbilities(GameState gameState)
+    {
+        foreach (KeyValuePair<AbilityType,AbilityBase> enemyAbilityKeyValuePair in gameState.PlayerAbilities)
+        {
+            switch (enemyAbilityKeyValuePair.Key)
+            {
+                case AbilityType.Attack:
+                    enemyAttackButton.GetComponentInChildren<TextMeshProUGUI>().text =
+                        enemyAbilityKeyValuePair.Value.CurrentCooldown <= 0
+                            ? AttackButtonTMP
+                            : enemyAbilityKeyValuePair.Value.CurrentCooldown.ToString();
+                    break;
+                case AbilityType.Barrier:
+                    enemyBarrierButton.GetComponentInChildren<TextMeshProUGUI>().text =
+                        enemyAbilityKeyValuePair.Value.CurrentCooldown <= 0
+                            ? BarrierButtonTMP
+                            : enemyAbilityKeyValuePair.Value.CurrentCooldown.ToString();
+                    break;
+                case AbilityType.Regeneration:
+                    enemyRegenerationButton.GetComponentInChildren<TextMeshProUGUI>().text =
+                        enemyAbilityKeyValuePair.Value.CurrentCooldown <= 0
+                            ? RegenerationButtonTMP
+                            : enemyAbilityKeyValuePair.Value.CurrentCooldown.ToString();
+                    break;
+                case AbilityType.Fireball:
+                    enemyFireballButton.GetComponentInChildren<TextMeshProUGUI>().text =
+                        enemyAbilityKeyValuePair.Value.CurrentCooldown <= 0
+                            ? FireballButtonTMP
+                            : enemyAbilityKeyValuePair.Value.CurrentCooldown.ToString();
+                    break;
+                case AbilityType.Cleanse:
+                    enemyCleanseButton.GetComponentInChildren<TextMeshProUGUI>().text =
+                        enemyAbilityKeyValuePair.Value.CurrentCooldown <= 0
+                            ? CleanseButtonTMP
+                            : enemyAbilityKeyValuePair.Value.CurrentCooldown.ToString();
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+    }
+
+    private void DisplayAllEffects(GameState gameState) // Requires optimization to minimize the calls to Destroy and Instantiate.
     {
         ClearEffects();
         
@@ -88,17 +147,6 @@ public class GameStateUIUpdater : MonoBehaviour
                 _ => throw new ArgumentOutOfRangeException()
             };
             effect.GetComponentInChildren<TextMeshProUGUI>().text = enemyEffect.CurrentDuration.ToString();
-        }
-    }
-
-    private void DisplayEnemyAbilities(GameState gameState)
-    {
-        foreach (KeyValuePair<AbilityType,AbilityBase> enemyAbilityKeyValuePair in gameState.EnemyAbilities)
-        {
-            switch (expression)
-            {
-                
-            }
         }
     }
     
