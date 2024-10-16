@@ -6,11 +6,11 @@ using UnityEngine.UI;
 
 public class ClientAbilityView : MonoBehaviour
 {
-    [SerializeField] private Button attackButton;
-    [SerializeField] private Button barrierButton;
-    [SerializeField] private Button regenerationButton;
-    [SerializeField] private Button fireballButton;
-    [SerializeField] private Button cleanseButton;
+    [SerializeField] private Button playerAttackButton;
+    [SerializeField] private Button playerBarrierButton;
+    [SerializeField] private Button playerRegenerationButton;
+    [SerializeField] private Button playerFireballButton;
+    [SerializeField] private Button playerCleanseButton;
     
     private const string AttackButtonTMP = "Attack";
     private const string BarrierButtonTMP = "Barrier";
@@ -25,39 +25,39 @@ public class ClientAbilityView : MonoBehaviour
             switch (playerAbilityKeyValuePair.Key)
             {
                 case AbilityType.Attack:
-                    attackButton.GetComponentInChildren<TextMeshProUGUI>().text =
+                    playerAttackButton.GetComponentInChildren<TextMeshProUGUI>().text =
                         playerAbilityKeyValuePair.Value.CurrentCooldown <= 0
                             ? AttackButtonTMP
                             : playerAbilityKeyValuePair.Value.CurrentCooldown.ToString();
-                    attackButton.interactable = playerAbilityKeyValuePair.Value.CurrentCooldown <= 0;
+                    playerAttackButton.interactable = playerAbilityKeyValuePair.Value.CurrentCooldown <= 0;
                     break;
                 case AbilityType.Barrier:
-                    barrierButton.GetComponentInChildren<TextMeshProUGUI>().text =
+                    playerBarrierButton.GetComponentInChildren<TextMeshProUGUI>().text =
                         playerAbilityKeyValuePair.Value.CurrentCooldown <= 0
                             ? BarrierButtonTMP
                             : playerAbilityKeyValuePair.Value.CurrentCooldown.ToString();
-                    barrierButton.interactable = playerAbilityKeyValuePair.Value.CurrentCooldown <= 0;
+                    playerBarrierButton.interactable = playerAbilityKeyValuePair.Value.CurrentCooldown <= 0;
                     break;
                 case AbilityType.Regeneration:
-                    regenerationButton.GetComponentInChildren<TextMeshProUGUI>().text =
+                    playerRegenerationButton.GetComponentInChildren<TextMeshProUGUI>().text =
                         playerAbilityKeyValuePair.Value.CurrentCooldown <= 0
                             ? RegenerationButtonTMP
                             : playerAbilityKeyValuePair.Value.CurrentCooldown.ToString();
-                    regenerationButton.interactable = playerAbilityKeyValuePair.Value.CurrentCooldown <= 0;
+                    playerRegenerationButton.interactable = playerAbilityKeyValuePair.Value.CurrentCooldown <= 0;
                     break;
                 case AbilityType.Fireball:
-                    fireballButton.GetComponentInChildren<TextMeshProUGUI>().text =
+                    playerFireballButton.GetComponentInChildren<TextMeshProUGUI>().text =
                         playerAbilityKeyValuePair.Value.CurrentCooldown <= 0
                             ? FireballButtonTMP
                             : playerAbilityKeyValuePair.Value.CurrentCooldown.ToString();
-                    fireballButton.interactable = playerAbilityKeyValuePair.Value.CurrentCooldown <= 0;
+                    playerFireballButton.interactable = playerAbilityKeyValuePair.Value.CurrentCooldown <= 0;
                     break;
                 case AbilityType.Cleanse:
-                    cleanseButton.GetComponentInChildren<TextMeshProUGUI>().text =
+                    playerCleanseButton.GetComponentInChildren<TextMeshProUGUI>().text =
                         playerAbilityKeyValuePair.Value.CurrentCooldown <= 0
                             ? CleanseButtonTMP
                             : playerAbilityKeyValuePair.Value.CurrentCooldown.ToString();
-                    cleanseButton.interactable = playerAbilityKeyValuePair.Value.CurrentCooldown <= 0;
+                    playerCleanseButton.interactable = playerAbilityKeyValuePair.Value.CurrentCooldown <= 0;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
