@@ -51,6 +51,7 @@ public class ServerAbilityController
             .Where(entry => entry.Value.CurrentCooldown <= 0)
             .Select(entry => entry.Key)
             .ToList();
+        // Debug.Log($"After this turn <color=red>Enemy</color> will have {availableAbilities.Count} abilities.");
         
         if (availableAbilities.Count > 0)
         {

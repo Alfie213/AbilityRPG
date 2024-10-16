@@ -44,7 +44,6 @@ public class GameStateUIUpdater : MonoBehaviour
 
     private void Handle_OnGameStateReceived(GameState gameState)
     {
-        Debug.Log(gameState.EnemyAbilities[AbilityType.Cleanse].CurrentCooldown);
         switch (gameState.CurrentState)
         {
             case GameStateType.Playing:
