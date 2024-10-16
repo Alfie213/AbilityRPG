@@ -26,20 +26,21 @@ public class ServerAbilityController
             case AbilityType.Barrier:
                 EffectBarrier effectBarrier = new EffectBarrier();
                 effectBarrier.CurrentBarrierValue = effectBarrier.MaxBarrierValue;
-                AddEffect(effectBarrier, gameState.Player.Effects);
+                gameState.Player.AddEffect(effectBarrier);
                 break;
 
             case AbilityType.Regeneration:
-                AddEffect(new EffectRegeneration(), gameState.Player.Effects);
+                gameState.Player.AddEffect(new EffectRegeneration());
                 break;
 
             case AbilityType.Fireball:
                 ApplyPlayerDamage(new AbilityFireball().AttackValue, gameState);
-                AddEffect(new EffectBurning(), gameState.Enemy.Effects);
+                gameState.Enemy.AddEffect(new EffectBurning());
                 break;
 
             case AbilityType.Cleanse:
-                gameState.Player.Effects.RemoveAll(ability => ability is EffectBurning);
+                EffectBase effectBurning = gameState.Player.Effects.Find(ability => ability is EffectBurning);
+                gameState.Player.RemoveEffect(effectBurning);
                 break;
 
             default:
@@ -80,20 +81,21 @@ public class ServerAbilityController
             case AbilityType.Barrier:
                 EffectBarrier effectBarrier = new EffectBarrier();
                 effectBarrier.CurrentBarrierValue = effectBarrier.MaxBarrierValue;
-                AddEffect(effectBarrier, gameState.Enemy.Effects);
+                gameState.Enemy.AddEffect(effectBarrier);
                 break;
 
             case AbilityType.Regeneration:
-                AddEffect(new EffectRegeneration(), gameState.Enemy.Effects);
+                gameState.Enemy.AddEffect(new EffectRegeneration());
                 break;
 
             case AbilityType.Fireball:
                 ApplyEnemyDamage(new AbilityFireball().AttackValue, gameState);
-                AddEffect(new EffectBurning(), gameState.Player.Effects);
+                gameState.Player.AddEffect(new EffectBurning());
                 break;
 
             case AbilityType.Cleanse:
-                gameState.Enemy.Effects.RemoveAll(ability => ability is EffectBurning);
+                EffectBase effectBurning = gameState.Enemy.Effects.Find(ability => ability is EffectBurning);
+                gameState.Enemy.RemoveEffect(effectBurning);
                 break;
 
             default:
@@ -139,12 +141,6 @@ public class ServerAbilityController
         {
             player.ApplyDamage(attackValue);
         }
-    }
-
-    private void AddEffect(EffectBase effect, List<EffectBase> effectsList)
-    {
-        effect.CurrentDuration = effect.MaxDuration;
-        effectsList.Add(effect);
     }
 
     public void ReduceCurrentCooldown(GameState gameState)

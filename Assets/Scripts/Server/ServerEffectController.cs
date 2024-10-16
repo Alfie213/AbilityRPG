@@ -50,7 +50,7 @@ public class ServerEffectController
                 playerEffectsToRemove.Add(playerEffect);
         }
         foreach (EffectBase effect in playerEffectsToRemove)
-            gameState.Player.Effects.Remove(effect);
+            gameState.Player.RemoveEffect(effect);
         
         List<EffectBase> enemyEffectsToRemove = new();
         foreach (EffectBase enemyEffect in gameState.Enemy.Effects)
@@ -60,6 +60,6 @@ public class ServerEffectController
                 enemyEffectsToRemove.Add(enemyEffect);
         }
         foreach (EffectBase effect in enemyEffectsToRemove)
-            gameState.Enemy.Effects.Remove(effect);
+            gameState.Enemy.RemoveEffect(effect);
     }
 }

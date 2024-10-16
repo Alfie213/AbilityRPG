@@ -33,6 +33,7 @@ public class Player
 
     public void AddEffect(EffectBase effect)
     {
+        effect.CurrentDuration = effect.MaxDuration;
         Effects.Add(effect);
     }
 
