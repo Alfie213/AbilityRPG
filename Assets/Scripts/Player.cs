@@ -1,8 +1,9 @@
 using System.Collections.Generic;
+using R3;
 
 public class Player
 {
-    public int Health { get; private set; } = 100;
+    public readonly ReactiveProperty<int> Health = new(100);
     public readonly List<EffectBase> Effects = new();
 
     public readonly IReadOnlyDictionary<AbilityType, AbilityBase> Abilities = new Dictionary<AbilityType, AbilityBase>
@@ -16,16 +17,14 @@ public class Player
     
     public void ApplyDamage(int damage)
     {
-        Health -= damage;
-        if (Health < 0)
-        {
-            Health = 0; // Убеждаемся, что здоровье не станет отрицательным
-        }
+        Health.Value -= damage;
+        if (Health.Value < 0)
+            Health.Value = 0;
     }
 
     public void Heal(int amount)
     {
-        Health += amount;
+        Health.Value += amount;
     }
 
     public void AddEffect(EffectBase effect)

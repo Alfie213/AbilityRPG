@@ -12,10 +12,10 @@ public class ServerEffectController
                 case EffectType.Barrier:
                     break;
                 case EffectType.Burning:
-                    // gameState.PlayerHealth -= ((EffectBurning)playerEffect).BurningValue;
+                    gameState.Player.ApplyDamage(((EffectBurning)playerEffect).BurningValue);
                     break;
                 case EffectType.Regeneration:
-                    // gameState.PlayerHealth += ((EffectRegeneration)playerEffect).RegenerationValue;
+                    gameState.Player.Heal(((EffectRegeneration)playerEffect).RegenerationValue);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -29,10 +29,10 @@ public class ServerEffectController
                 case EffectType.Barrier:
                     break;
                 case EffectType.Burning:
-                    // gameState.EnemyHealth -= ((EffectBurning)enemyEffect).BurningValue;
+                    gameState.Enemy.ApplyDamage(((EffectBurning)enemyEffect).BurningValue);
                     break;
                 case EffectType.Regeneration:
-                    // gameState.EnemyHealth += ((EffectRegeneration)enemyEffect).RegenerationValue;
+                    gameState.Enemy.Heal(((EffectRegeneration)enemyEffect).RegenerationValue);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

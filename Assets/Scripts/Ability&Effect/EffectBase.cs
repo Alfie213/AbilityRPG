@@ -31,5 +31,5 @@ public class EffectRegeneration : EffectBase
 {
     public override EffectType Type => EffectType.Regeneration;
     public override int MaxDuration => 3;
-    public int RegenerationValue { get; private set; } = 2;
+    public int RegenerationValue => 2;
 }

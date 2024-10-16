@@ -54,7 +54,7 @@ public class Server : MonoBehaviour, IGameServerAdapter
 
     private bool CheckGameOver()
     {
-        if (!(_gameState.Player.Health <= 0 || _gameState.Enemy.Health <= 0))
+        if (!(_gameState.Player.Health.Value <= 0 || _gameState.Enemy.Health.Value <= 0))
             return false;
         
         _gameState.CurrentState = GameStateType.GameOver;
