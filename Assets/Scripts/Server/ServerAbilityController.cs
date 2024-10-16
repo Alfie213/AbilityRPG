@@ -24,7 +24,9 @@ public class ServerAbilityController
                 break;
 
             case AbilityType.Barrier:
-                AddEffect(new EffectBarrier(), gameState.PlayerEffects);
+                EffectBarrier effectBarrier = new EffectBarrier();
+                effectBarrier.CurrentBarrierValue = effectBarrier.MaxBarrierValue;
+                AddEffect(effectBarrier, gameState.PlayerEffects);
                 break;
 
             case AbilityType.Regeneration:
@@ -76,7 +78,9 @@ public class ServerAbilityController
                 break;
 
             case AbilityType.Barrier:
-                AddEffect(new EffectBarrier(), gameState.EnemyEffects);
+                EffectBarrier effectBarrier = new EffectBarrier();
+                effectBarrier.CurrentBarrierValue = effectBarrier.MaxBarrierValue;
+                AddEffect(effectBarrier, gameState.EnemyEffects);
                 break;
 
             case AbilityType.Regeneration:
