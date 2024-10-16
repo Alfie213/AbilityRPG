@@ -3,7 +3,7 @@ using R3;
 
 public class Player
 {
-    public readonly ReactiveProperty<int> Health = new(100);
+    public readonly ReactiveProperty<int> Health = new(MaxHealth);
     public readonly List<EffectBase> Effects = new();
 
     public readonly IReadOnlyDictionary<AbilityType, AbilityBase> Abilities = new Dictionary<AbilityType, AbilityBase>
@@ -14,6 +14,8 @@ public class Player
         { AbilityType.Fireball, new AbilityFireball() },
         { AbilityType.Cleanse, new AbilityCleanse() }
     };
+
+    private const int MaxHealth = 100;
     
     public void ApplyDamage(int damage)
     {
@@ -25,6 +27,8 @@ public class Player
     public void Heal(int amount)
     {
         Health.Value += amount;
+        if (Health.Value > MaxHealth)
+            Health.Value = MaxHealth;
     }
 
     public void AddEffect(EffectBase effect)
