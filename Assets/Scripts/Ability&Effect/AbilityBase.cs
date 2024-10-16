@@ -19,7 +19,7 @@ public abstract class AbilityBase
     // }
     
     public abstract AbilityType Type { get; }
-    public abstract int Cooldown { get; set; }
+    public abstract int MaxCooldown { get; set; }
     public int CurrentCooldown { get; set; }
 }
 
@@ -31,31 +31,31 @@ public abstract class AbilityAttackBase : AbilityBase
 public class AbilityAttack : AbilityAttackBase
 {
     public override AbilityType Type => AbilityType.Attack;
-    public override int Cooldown { get; set; } = 0;
+    public override int MaxCooldown { get; set; } = 0;
     public override int AttackValue { get; set; } = 8;
 }
 
 public class AbilityBarrier : AbilityBase
 {
     public override AbilityType Type => AbilityType.Barrier;
-    public override int Cooldown { get; set; } = 4;
+    public override int MaxCooldown { get; set; } = 4;
 }
 
 public class AbilityRegeneration : AbilityBase
 {
     public override AbilityType Type => AbilityType.Regeneration;
-    public override int Cooldown { get; set; } = 5;
+    public override int MaxCooldown { get; set; } = 5;
 }
 
 public class AbilityFireball : AbilityAttackBase
 {
     public override AbilityType Type => AbilityType.Fireball;
-    public override int Cooldown { get; set; } = 6;
+    public override int MaxCooldown { get; set; } = 6;
     public override int AttackValue { get; set; } = 5;
 }
 
 public class AbilityCleanse : AbilityBase
 {
     public override AbilityType Type => AbilityType.Cleanse;
-    public override int Cooldown { get; set; } = 5;
+    public override int MaxCooldown { get; set; } = 5;
 }

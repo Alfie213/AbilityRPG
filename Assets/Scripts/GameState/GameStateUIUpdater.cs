@@ -44,6 +44,8 @@ public class GameStateUIUpdater : MonoBehaviour
 
     private void Handle_OnGameStateReceived(GameState gameState)
     {
+        Debug.Log($"Player {gameState.PlayerEffects.Count} effects.");
+        Debug.Log($"Enemy {gameState.EnemyEffects.Count} effects.");
         switch (gameState.CurrentState)
         {
             case GameStateType.Playing:

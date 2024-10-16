@@ -21,18 +21,18 @@ public class ServerAbilityController
                 break;
             case AbilityType.Barrier:
                 EffectBase effectBarrier = new EffectBarrier();
-                effectBarrier.CurrentDuration = effectBarrier.Duration;
+                effectBarrier.CurrentDuration = effectBarrier.MaxDuration;
                 gameState.PlayerEffects.Add(effectBarrier);
                 break;
             case AbilityType.Regeneration:
                 EffectBase effectRegeneration = new EffectRegeneration();
-                effectRegeneration.CurrentDuration = effectRegeneration.Duration;
+                effectRegeneration.CurrentDuration = effectRegeneration.MaxDuration;
                 gameState.PlayerEffects.Add(effectRegeneration);
                 break;
             case AbilityType.Fireball:
                 gameState.EnemyHealth -= new AbilityFireball().AttackValue;
                 EffectBase effectBurning = new EffectBurning();
-                effectBurning.CurrentDuration = effectBurning.Duration;
+                effectBurning.CurrentDuration = effectBurning.MaxDuration;
                 gameState.EnemyEffects.Add(effectBurning);
                 break;
             case AbilityType.Cleanse:
@@ -73,18 +73,18 @@ public class ServerAbilityController
                 break;
             case AbilityType.Barrier:
                 EffectBase effectBarrier = new EffectBarrier();
-                effectBarrier.CurrentDuration = effectBarrier.Duration;
+                effectBarrier.CurrentDuration = effectBarrier.MaxDuration;
                 gameState.EnemyEffects.Add(effectBarrier);
                 break;
             case AbilityType.Regeneration:
                 EffectBase effectRegeneration = new EffectRegeneration();
-                effectRegeneration.CurrentDuration = effectRegeneration.Duration;
+                effectRegeneration.CurrentDuration = effectRegeneration.MaxDuration;
                 gameState.EnemyEffects.Add(effectRegeneration);
                 break;
             case AbilityType.Fireball:
                 gameState.PlayerHealth -= new AbilityFireball().AttackValue;
                 EffectBase effectBurning = new EffectBurning();
-                effectBurning.CurrentDuration = effectBurning.Duration;
+                effectBurning.CurrentDuration = effectBurning.MaxDuration;
                 gameState.PlayerEffects.Add(effectBurning);
                 break;
             case AbilityType.Cleanse:
@@ -99,7 +99,7 @@ public class ServerAbilityController
     
     private void CooldownAbility(AbilityBase ability)
     {
-        ability.CurrentCooldown = ability.Cooldown;
+        ability.CurrentCooldown = ability.MaxCooldown;
     }
 
     public void ReduceCurrentCooldown(GameState gameState)
