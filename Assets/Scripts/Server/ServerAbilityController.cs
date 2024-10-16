@@ -48,7 +48,7 @@ public class ServerAbilityController
     public void ImitateEnemyAbilityUsage(GameState gameState)
     {
         var availableAbilities = gameState.EnemyAbilities
-            .Where(entry => entry.Value.CurrentCooldown == 0)
+            .Where(entry => entry.Value.CurrentCooldown <= 0)
             .Select(entry => entry.Key)
             .ToList();
         

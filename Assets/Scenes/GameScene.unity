@@ -205,8 +205,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: AbilityController, Assembly-CSharp
+      - m_Target: {fileID: 2146101556}
+        m_TargetAssemblyTypeName: ClientAbilityController, Assembly-CSharp
         m_MethodName: UseAbilityByIndex
         m_Mode: 3
         m_Arguments:
@@ -576,19 +576,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 206610755}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: AbilityController, Assembly-CSharp
-        m_MethodName: UseAbilityByIndex
-        m_Mode: 3
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 3
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &206610755
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -710,8 +698,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: AbilityController, Assembly-CSharp
+      - m_Target: {fileID: 2146101556}
+        m_TargetAssemblyTypeName: ClientAbilityController, Assembly-CSharp
         m_MethodName: UseAbilityByIndex
         m_Mode: 3
         m_Arguments:
@@ -2001,8 +1989,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: AbilityController, Assembly-CSharp
+      - m_Target: {fileID: 2146101556}
+        m_TargetAssemblyTypeName: ClientAbilityController, Assembly-CSharp
         m_MethodName: UseAbilityByIndex
         m_Mode: 3
         m_Arguments:
@@ -2267,19 +2255,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 932361688}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: AbilityController, Assembly-CSharp
-        m_MethodName: UseAbilityByIndex
-        m_Mode: 3
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 1
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &932361688
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2626,19 +2602,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1000608001}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: AbilityController, Assembly-CSharp
-        m_MethodName: UseAbilityByIndex
-        m_Mode: 3
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 4
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1000608001
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3149,8 +3113,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: AbilityController, Assembly-CSharp
+      - m_Target: {fileID: 2146101556}
+        m_TargetAssemblyTypeName: ClientAbilityController, Assembly-CSharp
         m_MethodName: UseAbilityByIndex
         m_Mode: 3
         m_Arguments:
@@ -3548,19 +3512,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1288298572}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: AbilityController, Assembly-CSharp
-        m_MethodName: UseAbilityByIndex
-        m_Mode: 3
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 2
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1288298572
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4324,8 +4276,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: AbilityController, Assembly-CSharp
+      - m_Target: {fileID: 2146101556}
+        m_TargetAssemblyTypeName: ClientAbilityController, Assembly-CSharp
         m_MethodName: UseAbilityByIndex
         m_Mode: 3
         m_Arguments:
@@ -4590,19 +4542,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1782059187}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: AbilityController, Assembly-CSharp
-        m_MethodName: UseAbilityByIndex
-        m_Mode: 3
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1782059187
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4760,15 +4700,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6aee0547f55eafd40b8f295fb78ac79a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  client: {fileID: 0}
+  client: {fileID: 2146101557}
   gameOverLayout: {fileID: 761635010}
   playerHealthTMP: {fileID: 609299504}
   enemyHealthTMP: {fileID: 999936877}
-  enemyAttackButton: {fileID: 0}
-  enemyBarrierButton: {fileID: 0}
-  enemyRegenerationButton: {fileID: 0}
-  enemyFireballButton: {fileID: 0}
-  enemyCleanseButton: {fileID: 0}
+  enemyAttackButton: {fileID: 1782059186}
+  enemyBarrierButton: {fileID: 932361687}
+  enemyRegenerationButton: {fileID: 1288298571}
+  enemyFireballButton: {fileID: 206610754}
+  enemyCleanseButton: {fileID: 1000608000}
   playerEffectsParent: {fileID: 2032793805}
   enemyEffectsParent: {fileID: 2089172877}
   barrierEffectUIPrefab: {fileID: 5381756725898087762, guid: 20591b2d094b30c439da1c918f05ab3a, type: 3}

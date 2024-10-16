@@ -44,6 +44,7 @@ public class GameStateUIUpdater : MonoBehaviour
 
     private void Handle_OnGameStateReceived(GameState gameState)
     {
+        Debug.Log(gameState.EnemyAbilities[AbilityType.Cleanse].CurrentCooldown);
         switch (gameState.CurrentState)
         {
             case GameStateType.Playing:
@@ -81,7 +82,7 @@ public class GameStateUIUpdater : MonoBehaviour
 
     private void DisplayEnemyAbilities(GameState gameState)
     {
-        foreach (KeyValuePair<AbilityType,AbilityBase> enemyAbilityKeyValuePair in gameState.PlayerAbilities)
+        foreach (KeyValuePair<AbilityType,AbilityBase> enemyAbilityKeyValuePair in gameState.EnemyAbilities)
         {
             switch (enemyAbilityKeyValuePair.Key)
             {
