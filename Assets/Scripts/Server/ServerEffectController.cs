@@ -1,13 +1,10 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 
 public class ServerEffectController
 {
     public void ApplyEffects(GameState gameState)
     {
-        List<EffectBase> playerEffectsToRemove = new();
         foreach (EffectBase playerEffect in gameState.PlayerEffects)
         {
             switch (playerEffect.Type)
@@ -23,15 +20,8 @@ public class ServerEffectController
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-
-            playerEffect.CurrentDuration -= 1;
-            if (playerEffect.CurrentDuration <= 0)
-                playerEffectsToRemove.Add(playerEffect);
         }
-        foreach (EffectBase effect in playerEffectsToRemove)
-            gameState.PlayerEffects.Remove(effect);
 
-        List<EffectBase> enemyEffectsToRemove = new();
         foreach (EffectBase enemyEffect in gameState.EnemyEffects)
         {
             switch (enemyEffect.Type)
@@ -47,23 +37,29 @@ public class ServerEffectController
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+        }
+    }
 
+    public void ReduceCurrentDuration(GameState gameState)
+    {
+        List<EffectBase> playerEffectsToRemove = new();
+        foreach (EffectBase playerEffect in gameState.PlayerEffects)
+        {
+            playerEffect.CurrentDuration -= 1;
+            if (playerEffect.CurrentDuration <= 0)
+                playerEffectsToRemove.Add(playerEffect);
+        }
+        foreach (EffectBase effect in playerEffectsToRemove)
+            gameState.PlayerEffects.Remove(effect);
+        
+        List<EffectBase> enemyEffectsToRemove = new();
+        foreach (EffectBase enemyEffect in gameState.EnemyEffects)
+        {
             enemyEffect.CurrentDuration -= 1;
             if (enemyEffect.CurrentDuration <= 0)
                 enemyEffectsToRemove.Add(enemyEffect);
         }
         foreach (EffectBase effect in enemyEffectsToRemove)
             gameState.EnemyEffects.Remove(effect);
-    }
-
-    public void ReduceCurrentDuration(GameState gameState)
-    {
-        foreach (EffectBase effect in gameState.AllEffects)
-        {
-            if (effect.CurrentDuration < 0)
-                continue;
-
-            effect.CurrentDuration--;
-        }
     }
 }
