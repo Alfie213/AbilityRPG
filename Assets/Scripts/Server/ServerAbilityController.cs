@@ -127,7 +127,7 @@ public class ServerAbilityController
             int damage = attackValue - effectBarrier.CurrentBarrierValue;
             if (damage >= 0)
             {
-                player.Health -= damage;
+                // player.Health -= damage;
                 effects.Remove(effectBarrier);
             }
             else
@@ -137,7 +137,7 @@ public class ServerAbilityController
         }
         else
         {
-            health -= attackValue;
+            // health -= attackValue;
         }
     }
 
