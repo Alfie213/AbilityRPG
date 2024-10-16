@@ -20,6 +20,9 @@ public class Server : MonoBehaviour, IGameServerAdapter
 
     public void SubmitAbilityUsage(AbilityType abilityType)
     {
+        Debug.Log($"Player: {_gameState.PlayerHealth}");
+        Debug.Log($"Enemy: {_gameState.EnemyHealth}");
+        
         if (!_serverAbilityController.TrySubmitPlayerAbilityUsage(_gameState, abilityType))
         {
             // Handle cheating :) (Using cooldown abilities)
