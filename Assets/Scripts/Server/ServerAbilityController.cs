@@ -10,8 +10,11 @@ public class ServerAbilityController
 {
     private static readonly Random Random = new();
     
-    public void SubmitPlayerAbilityUsage(GameState gameState, AbilityType abilityType)
+    public bool TrySubmitPlayerAbilityUsage(GameState gameState, AbilityType abilityType)
     {
+        if (gameState.PlayerAbilities[abilityType].CurrentCooldown > 0)
+            return false;
+        
         CooldownAbility(gameState.PlayerAbilities[abilityType]);
         
         switch (abilityType)
@@ -43,6 +46,7 @@ public class ServerAbilityController
         }
         
         Debug.Log("<color=green>Player</color> Ability used: " + abilityType);
+        return true;
     }
 
     public void ImitateEnemyAbilityUsage(GameState gameState)

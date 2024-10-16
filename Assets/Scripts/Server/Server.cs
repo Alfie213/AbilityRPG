@@ -20,7 +20,12 @@ public class Server : MonoBehaviour, IGameServerAdapter
 
     public void SubmitAbilityUsage(AbilityType abilityType)
     {
-        _serverAbilityController.SubmitPlayerAbilityUsage(_gameState, abilityType);
+        if (!_serverAbilityController.TrySubmitPlayerAbilityUsage(_gameState, abilityType))
+        {
+            // Handle cheating :) (Using cooldown abilities)
+            // Logger.Log(...);
+            Debug.LogError("Player is trying to use cooldown ability.");
+        }
 
         if (CheckGameOver())
             return;
