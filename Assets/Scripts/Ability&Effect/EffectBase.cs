@@ -16,7 +16,8 @@ public class EffectBarrier : EffectBase
 {
     public override EffectType Type => EffectType.Barrier;
     public override int MaxDuration => 2;
-    public int BarrierValue { get; private set; } = 5;
+    public int MaxBarrierValue => 5;
+    public int CurrentBarrierValue { get; set; }
 }
 
 public class EffectBurning : EffectBase
