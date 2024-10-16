@@ -88,7 +88,7 @@ public class ServerAbilityController
                 break;
 
             case AbilityType.Fireball:
-                ApplyPlayerDamage(new AbilityFireball().AttackValue, gameState);
+                ApplyEnemyDamage(new AbilityFireball().AttackValue, gameState);
                 AddEffect(new EffectBurning(), gameState.PlayerEffects);
                 break;
 
