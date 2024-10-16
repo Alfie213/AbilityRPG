@@ -20,8 +20,8 @@ public class Server : MonoBehaviour, IGameServerAdapter
 
     public void SubmitAbilityUsage(AbilityType abilityType)
     {
-        Debug.Log($"Player: {_gameState.PlayerHealth}");
-        Debug.Log($"Enemy: {_gameState.EnemyHealth}");
+        Debug.Log($"Player: {_gameState.Player.Health}");
+        Debug.Log($"Enemy: {_gameState.Enemy.Health}");
         
         if (!_serverAbilityController.TrySubmitPlayerAbilityUsage(_gameState, abilityType))
         {
@@ -54,7 +54,7 @@ public class Server : MonoBehaviour, IGameServerAdapter
 
     private bool CheckGameOver()
     {
-        if (!(_gameState.PlayerHealth <= 0 || _gameState.EnemyHealth <= 0))
+        if (!(_gameState.Player.Health <= 0 || _gameState.Enemy.Health <= 0))
             return false;
         
         _gameState.CurrentState = GameStateType.GameOver;

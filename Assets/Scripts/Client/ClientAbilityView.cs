@@ -20,7 +20,7 @@ public class ClientAbilityView : MonoBehaviour
     
     public void DisplayPlayerAbilities(GameState gameState)
     {
-        foreach (KeyValuePair<AbilityType,AbilityBase> playerAbilityKeyValuePair in gameState.PlayerAbilities)
+        foreach (KeyValuePair<AbilityType,AbilityBase> playerAbilityKeyValuePair in gameState.Player.Abilities)
         {
             switch (playerAbilityKeyValuePair.Key)
             {

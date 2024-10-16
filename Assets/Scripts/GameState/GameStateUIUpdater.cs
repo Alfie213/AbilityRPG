@@ -77,13 +77,13 @@ public class GameStateUIUpdater : MonoBehaviour
 
     private void DisplayHealth(GameState gameState)
     {
-        playerHealthTMP.text = gameState.PlayerHealth.ToString();
-        enemyHealthTMP.text = gameState.EnemyHealth.ToString();
+        playerHealthTMP.text = gameState.Player.Health.ToString();
+        enemyHealthTMP.text = gameState.Enemy.Health.ToString();
     }
 
     private void DisplayEnemyAbilities(GameState gameState)
     {
-        foreach (KeyValuePair<AbilityType,AbilityBase> enemyAbilityKeyValuePair in gameState.EnemyAbilities)
+        foreach (KeyValuePair<AbilityType,AbilityBase> enemyAbilityKeyValuePair in gameState.Enemy.Abilities)
         {
             switch (enemyAbilityKeyValuePair.Key)
             {
@@ -127,7 +127,7 @@ public class GameStateUIUpdater : MonoBehaviour
     {
         ClearEffects();
         
-        foreach (EffectBase playerEffect in gameState.PlayerEffects)
+        foreach (EffectBase playerEffect in gameState.Player.Effects)
         {
             GameObject effect = playerEffect.Type switch
             {
@@ -139,7 +139,7 @@ public class GameStateUIUpdater : MonoBehaviour
             effect.GetComponentInChildren<TextMeshProUGUI>().text = playerEffect.CurrentDuration.ToString();
         }
         
-        foreach (EffectBase enemyEffect in gameState.EnemyEffects)
+        foreach (EffectBase enemyEffect in gameState.Enemy.Effects)
         {
             GameObject effect = enemyEffect.Type switch
             {
