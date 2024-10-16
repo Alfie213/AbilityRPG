@@ -1,3 +1,5 @@
+using System;
+using R3;
 using UnityEngine;
 
 public class Server : MonoBehaviour, IGameServerAdapter
@@ -8,6 +10,8 @@ public class Server : MonoBehaviour, IGameServerAdapter
     private readonly ServerEffectController _serverEffectController = new();
     private readonly GameState _gameState = new();
 
+    private IDisposable _healthSubscription;
+
     private void Awake()
     {
         _gameState.CurrentState = GameStateType.Playing;
@@ -16,6 +20,15 @@ public class Server : MonoBehaviour, IGameServerAdapter
     private void Start()
     {
         client.InitializeServerAdapter(this);
+        _healthSubscription = Observable.Merge(
+                _gameState.Player.Health.Where(health => health <= 0),
+                _gameState.Enemy.Health.Where(health => health <= 0)
+            )
+            .Subscribe(health =>
+            {
+                _gameState.CurrentState = GameStateType.GameOver;
+                Debug.Log("GameOver");
+            });
     }
 
     public void SubmitAbilityUsage(AbilityType abilityType)
@@ -30,18 +43,9 @@ public class Server : MonoBehaviour, IGameServerAdapter
             Debug.LogError("Player is trying to use cooldown ability.");
         }
 
-        if (CheckGameOver())
-            return;
-
         _serverAbilityController.ImitateEnemyAbilityUsage(_gameState);
         
-        if (CheckGameOver())
-            return;
-
         _serverEffectController.ApplyEffects(_gameState);
-        
-        if (CheckGameOver())
-            return;
         
         _serverAbilityController.ReduceCurrentCooldown(_gameState);
         _serverEffectController.ReduceCurrentDuration(_gameState);
@@ -52,13 +56,8 @@ public class Server : MonoBehaviour, IGameServerAdapter
         return _gameState;
     }
 
-    private bool CheckGameOver()
+    private void OnDestroy()
     {
-        if (!(_gameState.Player.Health.Value <= 0 || _gameState.Enemy.Health.Value <= 0))
-            return false;
-        
-        _gameState.CurrentState = GameStateType.GameOver;
-        Debug.Log("GameOver");
-        return true;
+        _healthSubscription.Dispose();
     }
 }
