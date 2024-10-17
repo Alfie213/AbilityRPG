@@ -49,8 +49,8 @@ public class ServerEffectController
             if (playerEffect.CurrentDuration.Value <= 0)
                 playerEffectsToRemove.Add(playerEffect);
         }
-        foreach (EffectBase effect in playerEffectsToRemove)
-            gameState.Player.RemoveEffect(effect);
+        // foreach (EffectBase effect in playerEffectsToRemove)
+        //     gameState.Player.RemoveEffect(effect);
         
         List<EffectBase> enemyEffectsToRemove = new();
         foreach (EffectBase enemyEffect in gameState.Enemy.Effects)
@@ -59,7 +59,7 @@ public class ServerEffectController
             if (enemyEffect.CurrentDuration.Value <= 0)
                 enemyEffectsToRemove.Add(enemyEffect);
         }
-        foreach (EffectBase effect in enemyEffectsToRemove)
-            gameState.Enemy.RemoveEffect(effect);
+        // foreach (EffectBase effect in enemyEffectsToRemove)
+        //     gameState.Enemy.RemoveEffect(effect);
     }
 }

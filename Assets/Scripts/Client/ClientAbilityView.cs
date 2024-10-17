@@ -32,11 +32,20 @@ public class ClientAbilityView : MonoBehaviour
                     playerAttackButton.interactable = playerAbilityKeyValuePair.Value.CurrentCooldown <= 0;
                     break;
                 case AbilityType.Barrier:
+                    // playerBarrierButton.GetComponentInChildren<TextMeshProUGUI>().text =
+                    //     playerAbilityKeyValuePair.Value.CurrentCooldown <= 0
+                    //         ? BarrierButtonTMP
+                    //         : playerAbilityKeyValuePair.Value.CurrentCooldown.ToString();
+                    // playerBarrierButton.interactable = playerAbilityKeyValuePair.Value.CurrentCooldown <= 0;
                     playerBarrierButton.GetComponentInChildren<TextMeshProUGUI>().text =
-                        playerAbilityKeyValuePair.Value.CurrentCooldown <= 0
+                        playerAbilityKeyValuePair.Value.IsWaitingForEffectToExpire
                             ? BarrierButtonTMP
-                            : playerAbilityKeyValuePair.Value.CurrentCooldown.ToString();
-                    playerBarrierButton.interactable = playerAbilityKeyValuePair.Value.CurrentCooldown <= 0;
+                            : playerAbilityKeyValuePair.Value.CurrentCooldown <= 0
+                                ? BarrierButtonTMP
+                                : playerAbilityKeyValuePair.Value.CurrentCooldown.ToString();
+                    Debug.Log(playerAbilityKeyValuePair.Value.IsWaitingForEffectToExpire);
+                    Debug.Log(playerAbilityKeyValuePair.Value.CurrentCooldown);
+                    playerBarrierButton.interactable = !playerAbilityKeyValuePair.Value.IsWaitingForEffectToExpire && playerAbilityKeyValuePair.Value.CurrentCooldown <= 0;
                     break;
                 case AbilityType.Regeneration:
                     playerRegenerationButton.GetComponentInChildren<TextMeshProUGUI>().text =

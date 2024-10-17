@@ -22,7 +22,9 @@ public class ServerAbilityController
                 : Observable.Empty<int>()
         ).Subscribe(_ =>
         {
+            Debug.Log(ability.Type);
             player.RemoveEffect(effect);
+            ability.IsWaitingForEffectToExpire = false;
             CooldownAbility(ability);
         });
     }
