@@ -112,7 +112,7 @@ public class AbilityFireball : AbilityWithEffectBase
         target.ApplyDamage(FireballDamage);
     }
 
-    protected override EffectBase CreateEffect() => new EffectBurning();
+    protected override EffectBase CreateEffect() => new EffectBurning(this);
 }
 
 public class AbilityCleanse : AbilityBase
@@ -123,8 +123,11 @@ public class AbilityCleanse : AbilityBase
     public override void Cast(Player target)
     {
         base.Cast(target);
-        EffectBase effect = target.Effects.Find(e => e is EffectBurning);
-        if (effect != null)
-            target.RemoveEffect(effect);
+        var effectBurning = target.Effects.OfType<EffectBurning>().FirstOrDefault();
+        if (effectBurning != null)
+        {
+            target.RemoveEffect(effectBurning);
+            effectBurning.SourceAbility.IsWaitingForEffectToExpire = false;
+        }
     }
 }

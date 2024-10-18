@@ -36,6 +36,12 @@ public class EffectBurning : EffectBase
     public override EffectType Type => EffectType.Burning;
     public override int MaxDuration => 5;
     public int BurningValue => 1;
+    public readonly AbilityFireball SourceAbility;
+
+    public EffectBurning(AbilityFireball sourceAbility)
+    {
+        SourceAbility = sourceAbility;
+    }
 }
 
 public class EffectRegeneration : EffectBase
