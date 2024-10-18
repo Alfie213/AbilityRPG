@@ -42,16 +42,15 @@ public abstract class AbilityBase
 
 public abstract class AbilityWithEffectBase : AbilityBase
 {
-    protected abstract EffectBase CreateEffect();
+    protected abstract EffectBase CreateEffect(Player target);
 
     public override void Cast(Player target)
     {
         base.Cast(target);
-        var effect = CreateEffect();
+        var effect = CreateEffect(target);
         target.AddEffect(effect);
         effect.CurrentDuration.Where(duration => duration <= 0).Subscribe(_ =>
         {
-            target.RemoveEffect(effect);
             IsWaitingForEffectToExpire = false;
         });
     }
@@ -75,7 +74,7 @@ public class AbilityBarrier : AbilityWithEffectBase
     public override AbilityType Type => AbilityType.Barrier;
     protected override int MaxCooldown => 4;
 
-    protected override EffectBase CreateEffect() => new EffectBarrier();
+    protected override EffectBase CreateEffect(Player target) => new EffectBarrier(target);
 
     public override void Cast(Player target)
     {
@@ -85,9 +84,8 @@ public class AbilityBarrier : AbilityWithEffectBase
         {
             effectBarrier.CurrentBarrier.Where(currentBarrier => currentBarrier <= 0).Subscribe(_ =>
             {
-                target.RemoveEffect(effectBarrier);
                 IsWaitingForEffectToExpire = false;
-            })
+            });
         }
     }
 }
@@ -97,7 +95,7 @@ public class AbilityRegeneration : AbilityWithEffectBase
     public override AbilityType Type => AbilityType.Regeneration;
     protected override int MaxCooldown => 5;
 
-    protected override EffectBase CreateEffect() => new EffectRegeneration();
+    protected override EffectBase CreateEffect(Player target) => new EffectRegeneration(target);
 }
 
 public class AbilityFireball : AbilityWithEffectBase
@@ -112,7 +110,7 @@ public class AbilityFireball : AbilityWithEffectBase
         target.ApplyDamage(FireballDamage);
     }
 
-    protected override EffectBase CreateEffect() => new EffectBurning(this);
+    protected override EffectBase CreateEffect(Player target) => new EffectBurning(target, this);
 }
 
 public class AbilityCleanse : AbilityBase
