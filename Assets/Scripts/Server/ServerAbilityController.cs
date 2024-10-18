@@ -1,88 +1,48 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using R3;
-using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 using Random = System.Random;
 
 public class ServerAbilityController
 {
     private static readonly Random Random = new();
 
-    private void AddAndTrackEffectExpiring(AbilityBase ability, EffectBase effect, Player player)
-    {
-        player.AddEffect(effect);
-
-        Observable.Merge(
-            effect.CurrentDuration.Where(duration => duration <= 0),
-            effect is EffectBarrier barrier
-                ? barrier.CurrentBarrier.Where(value => value <= 0)
-                : Observable.Empty<int>()
-        ).Subscribe(_ =>
-        {
-            Debug.Log(ability.Type);
-            player.RemoveEffect(effect);
-            ability.IsWaitingForEffectToExpire = false;
-            CooldownAbility(ability);
-        });
-    }
-
-    private void CooldownAbility(AbilityBase ability)
-    {
-        ability.CurrentCooldown = ability.MaxCooldown;
-    }
-    
     public bool TrySubmitPlayerAbilityUsage(GameState gameState, AbilityType abilityType)
     {
         AbilityBase ability = gameState.Player.Abilities[abilityType];
         
-        if (ability.CurrentCooldown > 0)
+        if (!ability.IsReady)
             return false;
+
+        Player target;
         
-        switch (ability.Type)
+        switch (abilityType)
         {
             case AbilityType.Attack:
-                ApplyPlayerDamage(new AbilityAttack().AttackValue, gameState);
-                CooldownAbility(ability);
-                break;
-
-            case AbilityType.Barrier:
-                EffectBarrier effectBarrier = new EffectBarrier();
-                effectBarrier.CurrentBarrier.Value = effectBarrier.MaxBarrierValue;
-                AddAndTrackEffectExpiring(ability, effectBarrier, gameState.Player);
+            case AbilityType.Fireball:
+                target = gameState.Enemy;
                 break;
 
             case AbilityType.Regeneration:
-                EffectRegeneration effectRegeneration = new EffectRegeneration();
-                AddAndTrackEffectExpiring(ability, effectRegeneration, gameState.Player);
-                break;
-
-            case AbilityType.Fireball:
-                ApplyPlayerDamage(new AbilityFireball().AttackValue, gameState);
-                EffectBurning effectBurning = new EffectBurning();
-                AddAndTrackEffectExpiring(ability, effectBurning, gameState.Enemy);
-                break;
-
+            case AbilityType.Barrier:
             case AbilityType.Cleanse:
-                EffectBase activeEffectBurning = gameState.Player.Effects.Find(burning => burning is EffectBurning);
-                gameState.Player.RemoveEffect(activeEffectBurning);
-                CooldownAbility(ability);
+                target = gameState.Player;
                 break;
 
             default:
-                throw new ArgumentOutOfRangeException(nameof(abilityType), abilityType, null);
+                throw new ArgumentOutOfRangeException();
         }
         
-        Debug.Log("<color=green>Player</color> Ability used: " + abilityType);
+        ability.Cast(target);
+
+        Debug.Log("<color=green>Player</color> Ability casted: " + abilityType);
         return true;
     }
 
     public void ImitateEnemyAbilityUsage(GameState gameState)
     {
         var availableAbilities = gameState.Enemy.Abilities
-            .Where(entry => entry.Value.CurrentCooldown <= 0)
+            .Where(entry => entry.Value.IsReady)
             .Select(entry => entry.Key)
             .ToList();
         // Debug.Log($"After this turn <color=red>Enemy</color> will have {availableAbilities.Count} abilities.");
@@ -98,70 +58,30 @@ public class ServerAbilityController
     
     private void SubmitEnemyAbilityUsage(GameState gameState, AbilityType abilityType)
     {
+        AbilityBase ability = gameState.Enemy.Abilities[abilityType];
+
+        Player target;
+        
         switch (abilityType)
         {
             case AbilityType.Attack:
-                ApplyEnemyDamage(new AbilityAttack().AttackValue, gameState);
-                break;
-
-            case AbilityType.Barrier:
-                EffectBarrier effectBarrier = new EffectBarrier();
-                effectBarrier.CurrentBarrier.Value = effectBarrier.MaxBarrierValue;
-                gameState.Enemy.AddEffect(effectBarrier);
+            case AbilityType.Fireball:
+                target = gameState.Player;
                 break;
 
             case AbilityType.Regeneration:
-                gameState.Enemy.AddEffect(new EffectRegeneration());
-                break;
-
-            case AbilityType.Fireball:
-                ApplyEnemyDamage(new AbilityFireball().AttackValue, gameState);
-                gameState.Player.AddEffect(new EffectBurning());
-                break;
-
+            case AbilityType.Barrier:
             case AbilityType.Cleanse:
-                EffectBase effectBurning = gameState.Enemy.Effects.Find(ability => ability is EffectBurning);
-                gameState.Enemy.RemoveEffect(effectBurning);
+                target = gameState.Enemy;
                 break;
 
             default:
-                throw new ArgumentOutOfRangeException(nameof(abilityType), abilityType, null);
+                throw new ArgumentOutOfRangeException();
         }
         
-        Debug.Log("<color=red>Enemy</color> Ability used: " + abilityType);
-    }
+        ability.Cast(target);
 
-    private void ApplyPlayerDamage(int attackValue, GameState gameState)
-    {
-        ApplyDamage(attackValue, gameState.Enemy.Effects, gameState.Enemy);
-    }
-
-    private void ApplyEnemyDamage(int attackValue, GameState gameState)
-    {
-        ApplyDamage(attackValue, gameState.Player.Effects, gameState.Player);
-    }
-    
-    private void ApplyDamage(int attackValue, List<EffectBase> effects, Player player)
-    {
-        var effectBarrier = (EffectBarrier)effects.Find(effect => effect is EffectBarrier);
-
-        if (effectBarrier != null)
-        {
-            int damage = attackValue - effectBarrier.CurrentBarrier.Value;
-            if (damage >= 0)
-            {
-                player.ApplyDamage(damage);
-                effects.Remove(effectBarrier);
-            }
-            else
-            {
-                effectBarrier.CurrentBarrier.Value = damage;
-            }
-        }
-        else
-        {
-            player.ApplyDamage(attackValue);
-        }
+        Debug.Log("<color=red>Enemy</color> Ability casted: " + abilityType);
     }
 
     public void ReduceCurrentCooldown(GameState gameState)

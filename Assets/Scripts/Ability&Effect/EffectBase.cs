@@ -12,6 +12,10 @@ public abstract class EffectBase
     public abstract EffectType Type { get; }
     public abstract int MaxDuration { get; }
     public readonly ReactiveProperty<int> CurrentDuration = new();
+    public void ReduceDuration()
+    {
+        CurrentDuration.Value -= 1;
+    }
 }
 
 public class EffectBarrier : EffectBase
@@ -19,7 +23,12 @@ public class EffectBarrier : EffectBase
     public override EffectType Type => EffectType.Barrier;
     public override int MaxDuration => 2;
     public int MaxBarrierValue => 5;
-    public readonly ReactiveProperty<int> CurrentBarrier = new();
+    public readonly ReactiveProperty<int> CurrentBarrier;
+
+    public EffectBarrier()
+    {
+        CurrentBarrier = new ReactiveProperty<int>(MaxBarrierValue);
+    }
 }
 
 public class EffectBurning : EffectBase
