@@ -43,7 +43,7 @@ public class Player
         
             if (pureDamage >= 0)
             {
-                RemoveEffect(effectBarrier);
+                effectBarrier.CurrentBarrier.Value = 0;
                 return pureDamage;
             }
             else

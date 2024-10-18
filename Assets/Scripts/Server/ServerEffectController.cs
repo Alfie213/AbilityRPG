@@ -1,8 +1,14 @@
+using System.Linq;
+
 public class ServerEffectController
 {
     public void ApplyEffects(GameState gameState)
     {
-        foreach (EffectBase effect in gameState.AllEffects)
+        var effectsCopy = gameState.AllEffects.ToList();
+        
+        foreach (EffectBase effect in effectsCopy)
+        {
             effect.ApplyEffect();
+        }
     }
 }
