@@ -13,9 +13,9 @@ public abstract class EffectBase
     public abstract EffectType Type { get; }
     public abstract int MaxDuration { get; }
     public ReactiveProperty<int> CurrentDuration { get; private set; }
-    protected readonly Player Target;
+    protected readonly IEntity Target;
 
-    protected EffectBase(Player target)
+    protected EffectBase(IEntity target)
     {
         Target = target;
         InitializeCurrentDuration();
@@ -45,7 +45,7 @@ public class EffectBarrier : EffectBase
     public readonly ReactiveProperty<int> CurrentBarrier = new(MaxBarrierValue);
     private const int MaxBarrierValue = 5;
     
-    public EffectBarrier(Player target) : base(target)
+    public EffectBarrier(IEntity target) : base(target)
     {
     }
     
@@ -66,7 +66,7 @@ public class EffectBurning : EffectBase
     public AbilityFireball SourceAbility { get; }
     private const int BurningValue = 1;
 
-    public EffectBurning(Player target, AbilityFireball sourceAbility) : base(target)
+    public EffectBurning(IEntity target, AbilityFireball sourceAbility) : base(target)
     {
         SourceAbility = sourceAbility;
     }
@@ -84,7 +84,7 @@ public class EffectRegeneration : EffectBase
     public override int MaxDuration => 3;
     private const int RegenerationValue = 2;
 
-    public EffectRegeneration(Player target) : base(target)
+    public EffectRegeneration(IEntity target) : base(target)
     {
     }
     

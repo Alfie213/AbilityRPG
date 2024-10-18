@@ -24,7 +24,7 @@ public abstract class AbilityBase
     public int CurrentCooldown { get; private set; }
     protected abstract int MaxCooldown { get; }
     
-    public virtual void Cast(Player target)
+    public virtual void Cast(IEntity target)
     {
         CooldownAbility();
     }
@@ -45,7 +45,7 @@ public abstract class AbilityWithEffectBase : AbilityBase
 {
     public bool IsWaitingForEffectToExpire { get; set; }
 
-    public override void Cast(Player target)
+    public override void Cast(IEntity target)
     {
         base.Cast(target);
         IsWaitingForEffectToExpire = true;
@@ -64,7 +64,7 @@ public abstract class AbilityWithEffectBase : AbilityBase
         base.ReduceCooldown();
     }
 
-    protected abstract EffectBase CreateEffect(Player target);
+    protected abstract EffectBase CreateEffect(IEntity target);
     public override bool IsWaitingForEffect => IsWaitingForEffectToExpire;
 }
 
@@ -74,7 +74,7 @@ public class AbilityAttack : AbilityBase
     protected override int MaxCooldown => 0;
     private const int AttackDamage = 8;
 
-    public override void Cast(Player target)
+    public override void Cast(IEntity target)
     {
         base.Cast(target);
         target.ApplyDamage(AttackDamage);
@@ -86,7 +86,7 @@ public class AbilityBarrier : AbilityWithEffectBase
     public override AbilityType Type => AbilityType.Barrier;
     protected override int MaxCooldown => 4;
 
-    public override void Cast(Player target)
+    public override void Cast(IEntity target)
     {
         base.Cast(target);
         var effectBarrier = target.Effects.OfType<EffectBarrier>().FirstOrDefault();
@@ -99,7 +99,7 @@ public class AbilityBarrier : AbilityWithEffectBase
         }
     }
     
-    protected override EffectBase CreateEffect(Player target) => new EffectBarrier(target);
+    protected override EffectBase CreateEffect(IEntity target) => new EffectBarrier(target);
     public override bool IsWaitingForEffect => IsWaitingForEffectToExpire;
 }
 
@@ -108,7 +108,7 @@ public class AbilityRegeneration : AbilityWithEffectBase
     public override AbilityType Type => AbilityType.Regeneration;
     protected override int MaxCooldown => 5;
     
-    protected override EffectBase CreateEffect(Player target) => new EffectRegeneration(target);
+    protected override EffectBase CreateEffect(IEntity target) => new EffectRegeneration(target);
     public override bool IsWaitingForEffect => IsWaitingForEffectToExpire;
 }
 
@@ -118,13 +118,13 @@ public class AbilityFireball : AbilityWithEffectBase
     protected override int MaxCooldown => 6;
     private const int FireballDamage = 5;
 
-    public override void Cast(Player target)
+    public override void Cast(IEntity target)
     {
         base.Cast(target);
         target.ApplyDamage(FireballDamage);
     }
 
-    protected override EffectBase CreateEffect(Player target) => new EffectBurning(target, this);
+    protected override EffectBase CreateEffect(IEntity target) => new EffectBurning(target, this);
     public override bool IsWaitingForEffect => IsWaitingForEffectToExpire;
 }
 
@@ -133,7 +133,7 @@ public class AbilityCleanse : AbilityBase
     public override AbilityType Type => AbilityType.Cleanse;
     protected override int MaxCooldown => 5;
 
-    public override void Cast(Player target)
+    public override void Cast(IEntity target)
     {
         base.Cast(target);
         var effectBurning = target.Effects.OfType<EffectBurning>().FirstOrDefault();

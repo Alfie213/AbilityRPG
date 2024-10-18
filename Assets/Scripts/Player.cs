@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using R3;
 
-public class Player
+public class Player : IEntity
 {
-    public readonly ReactiveProperty<int> Health = new(MaxHealth);
-    public readonly List<EffectBase> Effects = new();
+    public ReactiveProperty<int> Health { get; } = new(MaxHealth);
+    public List<EffectBase> Effects { get; } = new();
 
     public readonly IReadOnlyDictionary<AbilityType, AbilityBase> Abilities = new Dictionary<AbilityType, AbilityBase>
     {
@@ -16,7 +16,7 @@ public class Player
     };
 
     private const int MaxHealth = 100;
-    
+
     public void ApplyDamage(int damage)
     {
         int remainingDamage = ProcessBarrier(damage);

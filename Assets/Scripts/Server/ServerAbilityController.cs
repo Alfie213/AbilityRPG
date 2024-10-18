@@ -14,7 +14,7 @@ public class ServerAbilityController
         if (!ability.IsReady)
             return false;
 
-        Player target = GetTarget(gameState, abilityType, isPlayer: true);
+        IEntity target = GetTarget(gameState, abilityType, isPlayer: true);
         ability.Cast(target);
 
         Debug.Log("<color=green>Player</color> Ability casted: " + abilityType);
@@ -42,13 +42,13 @@ public class ServerAbilityController
     private void SubmitEnemyAbilityUsage(GameState gameState, AbilityType abilityType)
     {
         AbilityBase ability = gameState.Enemy.Abilities[abilityType];
-        Player target = GetTarget(gameState, abilityType, isPlayer: false);
+        IEntity target = GetTarget(gameState, abilityType, isPlayer: false);
         ability.Cast(target);
 
         Debug.Log("<color=red>Enemy</color> Ability casted: " + abilityType);
     }
 
-    private Player GetTarget(GameState gameState, AbilityType abilityType, bool isPlayer)
+    private IEntity GetTarget(GameState gameState, AbilityType abilityType, bool isPlayer)
     {
         return abilityType switch
         {
