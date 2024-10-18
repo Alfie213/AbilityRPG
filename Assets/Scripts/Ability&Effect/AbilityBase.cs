@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using R3;
 
 public enum AbilityType
@@ -34,30 +32,31 @@ public abstract class AbilityBase
     {
         CurrentCooldown -= 1;
     }
-
-    protected virtual void AddEffect(Player target, EffectBase effect)
-    {
-        target.AddEffect(effect);
-        effect.CurrentDuration.Where(currentDuration => currentDuration <= 0).Subscribe(_ =>
-        {
-            target.RemoveEffect(effect);
-            IsWaitingForEffectToExpire = false;
-        });
-    }
+    
     private void CooldownAbility()
     {
         CurrentCooldown = MaxCooldown;
     }
 }
 
-public abstract class AbilityAttackBase : AbilityBase
+// public abstract class AbilityAttackBase : AbilityBase
+// {
+//     public abstract int AttackValue { get; }
+// }
+
+public abstract class AbilityWithEffectBase : AbilityBase
 {
-    public abstract int AttackValue { get; }
+    public override AbilityType Type { get; }
+    public override int MaxCooldown { get; }
+    public override void Cast(Player target)
+    {
+        base.Cast(target);
+        AddEffect(target);
+    }
+    protected abstract void AddEffect(Player target);
 }
 
-// effectableAbility
-
-public class AbilityAttack : AbilityAttackBase
+public class AbilityAttack : AbilityBase
 {
     public override AbilityType Type => AbilityType.Attack;
     public override int MaxCooldown => 0;
@@ -69,28 +68,28 @@ public class AbilityAttack : AbilityAttackBase
     }
 }
 
-public class AbilityBarrier : AbilityBase
+public class AbilityBarrier : AbilityWithEffectBase
 {
     public override AbilityType Type => AbilityType.Barrier;
     public override int MaxCooldown => 4;
     public override void Cast(Player target)
     {
         base.Cast(target);
-        target.AddEffect(new EffectBarrier());
+        AddEffect(target);
     }
-
-    protected override void AddEffect(Player target, EffectBase effect)
+    protected override void AddEffect(Player target)
     {
-        base.AddEffect(target, effect);
-        ((EffectBarrier)effect).CurrentBarrier.Where(currentBarrier => currentBarrier <= 0).Subscribe(_ =>
+        EffectBarrier effectBarrier = new EffectBarrier();
+        target.AddEffect(effectBarrier);
+        effectBarrier.CurrentBarrier.Where(currentBarrier => currentBarrier <= 0).Subscribe(_ =>
         {
-            target.RemoveEffect(effect);
+            target.RemoveEffect(effectBarrier);
             IsWaitingForEffectToExpire = false;
         });
     }
 }
 
-public class AbilityRegeneration : AbilityBase
+public class AbilityRegeneration : AbilityWithEffectBase
 {
     public override AbilityType Type => AbilityType.Regeneration;
     public override int MaxCooldown => 5;
@@ -99,9 +98,19 @@ public class AbilityRegeneration : AbilityBase
         base.Cast(target);
         target.AddEffect(new EffectRegeneration());
     }
+    protected override void AddEffect(Player target)
+    {
+        EffectRegeneration effectRegeneration = new EffectRegeneration();
+        target.AddEffect(effectRegeneration);
+        effectRegeneration.CurrentDuration.Where(currentDuration => currentDuration <= 0).Subscribe(_ =>
+        {
+            target.RemoveEffect(effectRegeneration);
+            IsWaitingForEffectToExpire = false;
+        });
+    }
 }
 
-public class AbilityFireball : AbilityAttackBase
+public class AbilityFireball : AbilityWithEffectBase
 {
     public override AbilityType Type => AbilityType.Fireball;
     public override int MaxCooldown => 6;
@@ -111,6 +120,16 @@ public class AbilityFireball : AbilityAttackBase
         base.Cast(target);
         target.ApplyDamage(AttackValue);
         target.AddEffect(new EffectBurning());
+    }
+    protected override void AddEffect(Player target)
+    {
+        EffectBurning effectBurning = new EffectBurning();
+        target.AddEffect(effectBurning);
+        effectBurning.CurrentDuration.Where(currentDuration => currentDuration <= 0).Subscribe(_ =>
+        {
+            target.RemoveEffect(effectBurning);
+            IsWaitingForEffectToExpire = false;
+        });
     }
 }
 
