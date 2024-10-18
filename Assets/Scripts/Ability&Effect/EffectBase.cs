@@ -11,23 +11,39 @@ public abstract class EffectBase
 {
     public abstract EffectType Type { get; }
     public abstract int MaxDuration { get; }
-    public readonly ReactiveProperty<int> CurrentDuration = new();
+    public ReactiveProperty<int> CurrentDuration { get; } = new();
+
+    protected EffectBase()
+    {
+        CurrentDuration.Value = MaxDuration;
+    }
+
     public void ReduceDuration()
     {
-        CurrentDuration.Value -= 1;
+        CurrentDuration.Value--;
     }
+
+    public abstract void ApplyEffect(Player player);
 }
 
 public class EffectBarrier : EffectBase
 {
     public override EffectType Type => EffectType.Barrier;
     public override int MaxDuration => 2;
-    public int MaxBarrierValue => 5;
-    public readonly ReactiveProperty<int> CurrentBarrier;
+    public ReactiveProperty<int> CurrentBarrier { get; }
+    private int MaxBarrierValue => 5;
 
     public EffectBarrier()
     {
         CurrentBarrier = new ReactiveProperty<int>(MaxBarrierValue);
+    }
+
+    public override void ApplyEffect(Player player)
+    {
+        if (CurrentBarrier.Value <= 0)
+        {
+            player.Effects.Remove(this);
+        }
     }
 }
 
@@ -35,12 +51,17 @@ public class EffectBurning : EffectBase
 {
     public override EffectType Type => EffectType.Burning;
     public override int MaxDuration => 5;
-    public int BurningValue => 1;
-    public readonly AbilityFireball SourceAbility;
+    public AbilityFireball SourceAbility { get; }
+    private int BurningValue => 1;
 
     public EffectBurning(AbilityFireball sourceAbility)
     {
         SourceAbility = sourceAbility;
+    }
+
+    public override void ApplyEffect(Player player)
+    {
+        player.ApplyDamage(BurningValue);
     }
 }
 
@@ -48,5 +69,10 @@ public class EffectRegeneration : EffectBase
 {
     public override EffectType Type => EffectType.Regeneration;
     public override int MaxDuration => 3;
-    public int RegenerationValue => 2;
+    private int RegenerationValue => 2;
+
+    public override void ApplyEffect(Player player)
+    {
+        player.Heal(RegenerationValue);
+    }
 }
