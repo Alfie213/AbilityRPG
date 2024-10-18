@@ -20,10 +20,9 @@ public abstract class AbilityBase
     // }
     
     public abstract AbilityType Type { get; }
-    public bool IsReady => _currentCooldown <= 0;
-    public bool IsWaitingForEffectToExpire { get; set; } = true;
+    public bool IsReady => CurrentCooldown <= 0;
+    public int CurrentCooldown { get; private set; }
     protected abstract int MaxCooldown { get; }
-    private int _currentCooldown;
     
     public virtual void Cast(Player target)
     {
@@ -32,16 +31,19 @@ public abstract class AbilityBase
     public void ReduceCooldown()
     {
         if (!IsReady)
-            _currentCooldown--;
+            CurrentCooldown--;
     }
     private void CooldownAbility()
     {
-        _currentCooldown = MaxCooldown;
+        CurrentCooldown = MaxCooldown;
     }
+    
+    public virtual bool IsWaitingForEffect => false;
 }
 
 public abstract class AbilityWithEffectBase : AbilityBase
 {
+    public bool IsWaitingForEffectToExpire { get; set; } = true;
     protected abstract EffectBase CreateEffect(Player target);
 
     public override void Cast(Player target)
@@ -54,6 +56,8 @@ public abstract class AbilityWithEffectBase : AbilityBase
             IsWaitingForEffectToExpire = false;
         });
     }
+    
+    public override bool IsWaitingForEffect => IsWaitingForEffectToExpire;
 }
 
 public class AbilityAttack : AbilityBase

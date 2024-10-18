@@ -20,57 +20,47 @@ public class ClientAbilityView : MonoBehaviour
     
     public void DisplayPlayerAbilities(GameState gameState)
     {
-        foreach (KeyValuePair<AbilityType,AbilityBase> playerAbilityKeyValuePair in gameState.Player.Abilities)
+        foreach (KeyValuePair<AbilityType, AbilityBase> playerAbilityKeyValuePair in gameState.Player.Abilities)
         {
-            switch (playerAbilityKeyValuePair.Key)
-            {
-                case AbilityType.Attack:
-                    playerAttackButton.GetComponentInChildren<TextMeshProUGUI>().text =
-                        playerAbilityKeyValuePair.Value.CurrentCooldown <= 0
-                            ? AttackButtonTMP
-                            : playerAbilityKeyValuePair.Value.CurrentCooldown.ToString();
-                    playerAttackButton.interactable = playerAbilityKeyValuePair.Value.CurrentCooldown <= 0;
-                    break;
-                case AbilityType.Barrier:
-                    // playerBarrierButton.GetComponentInChildren<TextMeshProUGUI>().text =
-                    //     playerAbilityKeyValuePair.Value.CurrentCooldown <= 0
-                    //         ? BarrierButtonTMP
-                    //         : playerAbilityKeyValuePair.Value.CurrentCooldown.ToString();
-                    // playerBarrierButton.interactable = playerAbilityKeyValuePair.Value.CurrentCooldown <= 0;
-                    playerBarrierButton.GetComponentInChildren<TextMeshProUGUI>().text =
-                        playerAbilityKeyValuePair.Value.IsWaitingForEffectToExpire
-                            ? BarrierButtonTMP
-                            : playerAbilityKeyValuePair.Value.CurrentCooldown <= 0
-                                ? BarrierButtonTMP
-                                : playerAbilityKeyValuePair.Value.CurrentCooldown.ToString();
-                    Debug.Log(playerAbilityKeyValuePair.Value.IsWaitingForEffectToExpire);
-                    Debug.Log(playerAbilityKeyValuePair.Value.CurrentCooldown);
-                    playerBarrierButton.interactable = !playerAbilityKeyValuePair.Value.IsWaitingForEffectToExpire && playerAbilityKeyValuePair.Value.CurrentCooldown <= 0;
-                    break;
-                case AbilityType.Regeneration:
-                    playerRegenerationButton.GetComponentInChildren<TextMeshProUGUI>().text =
-                        playerAbilityKeyValuePair.Value.CurrentCooldown <= 0
-                            ? RegenerationButtonTMP
-                            : playerAbilityKeyValuePair.Value.CurrentCooldown.ToString();
-                    playerRegenerationButton.interactable = playerAbilityKeyValuePair.Value.CurrentCooldown <= 0;
-                    break;
-                case AbilityType.Fireball:
-                    playerFireballButton.GetComponentInChildren<TextMeshProUGUI>().text =
-                        playerAbilityKeyValuePair.Value.CurrentCooldown <= 0
-                            ? FireballButtonTMP
-                            : playerAbilityKeyValuePair.Value.CurrentCooldown.ToString();
-                    playerFireballButton.interactable = playerAbilityKeyValuePair.Value.CurrentCooldown <= 0;
-                    break;
-                case AbilityType.Cleanse:
-                    playerCleanseButton.GetComponentInChildren<TextMeshProUGUI>().text =
-                        playerAbilityKeyValuePair.Value.CurrentCooldown <= 0
-                            ? CleanseButtonTMP
-                            : playerAbilityKeyValuePair.Value.CurrentCooldown.ToString();
-                    playerCleanseButton.interactable = playerAbilityKeyValuePair.Value.CurrentCooldown <= 0;
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
+            AbilityBase ability = playerAbilityKeyValuePair.Value;
+            bool isWaitingForEffect = ability.IsWaitingForEffect;
+            string buttonText = GetButtonText(ability);
+            bool interactable = !isWaitingForEffect && ability.IsReady;
+
+            UpdateButton(playerAbilityKeyValuePair.Key, buttonText, interactable);
         }
+    }
+
+    private string GetButtonText(AbilityBase ability)
+    {
+        if (ability.IsWaitingForEffect || ability.IsReady)
+        {
+            return ability.Type switch
+            {
+                AbilityType.Attack => AttackButtonTMP,
+                AbilityType.Barrier => BarrierButtonTMP,
+                AbilityType.Regeneration => RegenerationButtonTMP,
+                AbilityType.Fireball => FireballButtonTMP,
+                AbilityType.Cleanse => CleanseButtonTMP,
+                _ => throw new ArgumentOutOfRangeException(),
+            };
+        }
+        return ability.CurrentCooldown.ToString();
+    }
+    
+    private void UpdateButton(AbilityType abilityType, string buttonText, bool interactable)
+    {
+        Button button = abilityType switch
+        {
+            AbilityType.Attack => playerAttackButton,
+            AbilityType.Barrier => playerBarrierButton,
+            AbilityType.Regeneration => playerRegenerationButton,
+            AbilityType.Fireball => playerFireballButton,
+            AbilityType.Cleanse => playerCleanseButton,
+            _ => throw new ArgumentOutOfRangeException()
+        };
+
+        button.GetComponentInChildren<TextMeshProUGUI>().text = buttonText;
+        button.interactable = interactable;
     }
 }
