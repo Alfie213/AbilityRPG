@@ -2,8 +2,10 @@ public class ServerEffectController
 {
     public void ApplyEffects(GameState gameState)
     {
-        gameState.Player.ApplyEffects();
-        gameState.Enemy.ApplyEffects();
+        foreach (EffectBase effect in gameState.AllEffects)
+        {
+            effect.ApplyEffect();
+        }
     }
 
     public void ReduceCurrentDuration(GameState gameState)

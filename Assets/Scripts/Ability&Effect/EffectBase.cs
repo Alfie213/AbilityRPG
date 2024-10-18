@@ -12,37 +12,42 @@ public abstract class EffectBase
     public abstract EffectType Type { get; }
     public abstract int MaxDuration { get; }
     public ReactiveProperty<int> CurrentDuration { get; } = new();
+    protected readonly Player Target;
 
-    protected EffectBase()
+    protected EffectBase(Player target)
     {
-        CurrentDuration.Value = MaxDuration;
+        Target = target;
     }
-
+    
     public void ReduceDuration()
     {
         CurrentDuration.Value--;
+        if (CurrentDuration.Value <= 0)
+            Target.RemoveEffect(this);
     }
-
-    public abstract void ApplyEffect(Player player);
+    public virtual void ApplyEffect()
+    {
+        CurrentDuration.Value = MaxDuration;
+    }
 }
 
 public class EffectBarrier : EffectBase
 {
     public override EffectType Type => EffectType.Barrier;
     public override int MaxDuration => 2;
-    public ReactiveProperty<int> CurrentBarrier { get; }
-    private int MaxBarrierValue => 5;
-
-    public EffectBarrier()
+    public readonly ReactiveProperty<int> CurrentBarrier = new(MaxBarrierValue);
+    private const int MaxBarrierValue = 5;
+    
+    public EffectBarrier(Player target) : base(target)
     {
-        CurrentBarrier = new ReactiveProperty<int>(MaxBarrierValue);
     }
-
-    public override void ApplyEffect(Player player)
+    
+    public override void ApplyEffect()
     {
+        base.ApplyEffect();
         if (CurrentBarrier.Value <= 0)
         {
-            player.Effects.Remove(this);
+            Target.Effects.Remove(this);
         }
     }
 }
@@ -52,16 +57,17 @@ public class EffectBurning : EffectBase
     public override EffectType Type => EffectType.Burning;
     public override int MaxDuration => 5;
     public AbilityFireball SourceAbility { get; }
-    private int BurningValue => 1;
+    private const int BurningValue = 1;
 
-    public EffectBurning(AbilityFireball sourceAbility)
+    public EffectBurning(Player target, AbilityFireball sourceAbility) : base(target)
     {
         SourceAbility = sourceAbility;
     }
-
-    public override void ApplyEffect(Player player)
+    
+    public override void ApplyEffect()
     {
-        player.ApplyDamage(BurningValue);
+        base.ApplyEffect();
+        Target.ApplyDamage(BurningValue);
     }
 }
 
@@ -69,10 +75,15 @@ public class EffectRegeneration : EffectBase
 {
     public override EffectType Type => EffectType.Regeneration;
     public override int MaxDuration => 3;
-    private int RegenerationValue => 2;
+    private const int RegenerationValue = 2;
 
-    public override void ApplyEffect(Player player)
+    public EffectRegeneration(Player target) : base(target)
     {
-        player.Heal(RegenerationValue);
+    }
+    
+    public override void ApplyEffect()
+    {
+        base.ApplyEffect();
+        Target.Heal(RegenerationValue);
     }
 }
