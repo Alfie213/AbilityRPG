@@ -87,7 +87,7 @@ public class AbilityBarrier : AbilityWithEffectBase
             {
                 target.RemoveEffect(effectBarrier);
                 IsWaitingForEffectToExpire = false;
-            });
+            })
         }
     }
 }

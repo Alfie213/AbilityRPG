@@ -1,4 +1,5 @@
 using R3;
+using UnityEngine;
 
 public enum EffectType
 {
@@ -11,23 +12,29 @@ public abstract class EffectBase
 {
     public abstract EffectType Type { get; }
     public abstract int MaxDuration { get; }
-    public ReactiveProperty<int> CurrentDuration { get; } = new();
+    public ReactiveProperty<int> CurrentDuration { get; set; }
     protected readonly Player Target;
 
     protected EffectBase(Player target)
     {
         Target = target;
+        InitializeCurrentDuration();
     }
-    
-    public void ReduceDuration()
+
+    private void InitializeCurrentDuration()
+    {
+        CurrentDuration = new ReactiveProperty<int>(MaxDuration);
+        Debug.Log(CurrentDuration.Value);
+    }
+    public virtual void ApplyEffect()
+    {
+        ReduceDuration();
+    }
+    private void ReduceDuration()
     {
         CurrentDuration.Value--;
         if (CurrentDuration.Value <= 0)
             Target.RemoveEffect(this);
-    }
-    public virtual void ApplyEffect()
-    {
-        CurrentDuration.Value = MaxDuration;
     }
 }
 
@@ -44,11 +51,11 @@ public class EffectBarrier : EffectBase
     
     public override void ApplyEffect()
     {
-        base.ApplyEffect();
         if (CurrentBarrier.Value <= 0)
         {
             Target.Effects.Remove(this);
         }
+        base.ApplyEffect();
     }
 }
 
@@ -66,8 +73,8 @@ public class EffectBurning : EffectBase
     
     public override void ApplyEffect()
     {
-        base.ApplyEffect();
         Target.ApplyDamage(BurningValue);
+        base.ApplyEffect();
     }
 }
 
@@ -83,7 +90,7 @@ public class EffectRegeneration : EffectBase
     
     public override void ApplyEffect()
     {
-        base.ApplyEffect();
         Target.Heal(RegenerationValue);
+        base.ApplyEffect();
     }
 }
