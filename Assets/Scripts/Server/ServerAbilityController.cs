@@ -58,9 +58,9 @@ public class ServerAbilityController
         };
     }
 
-    public void ReduceCurrentCooldown(GameState gameState)
+    public void ReduceCooldown(GameState gameState)
     {
-        foreach (AbilityBase ability in gameState.AllAbilities.Where(ability => ability.CurrentCooldown >= 0))
-            ability.CurrentCooldown--;
+        foreach (AbilityBase ability in gameState.AllAbilities)
+            ability.ReduceCooldown();
     }
 }

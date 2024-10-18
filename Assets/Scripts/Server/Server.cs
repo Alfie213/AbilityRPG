@@ -47,7 +47,7 @@ public class Server : MonoBehaviour, IGameServerAdapter
         
         _serverEffectController.ApplyEffects(_gameState);
         
-        _serverAbilityController.ReduceCurrentCooldown(_gameState);
+        _serverAbilityController.ReduceCooldown(_gameState);
         _serverEffectController.ReduceCurrentDuration(_gameState);
     }
 

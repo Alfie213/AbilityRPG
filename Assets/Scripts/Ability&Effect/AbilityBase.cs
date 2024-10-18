@@ -20,23 +20,23 @@ public abstract class AbilityBase
     // }
     
     public abstract AbilityType Type { get; }
-    public abstract int MaxCooldown { get; }
-    public int CurrentCooldown { get; set; }
-    public bool IsReady => CurrentCooldown <= 0;
+    public bool IsReady => _currentCooldown <= 0;
     public bool IsWaitingForEffectToExpire { get; set; } = true;
-
+    protected abstract int MaxCooldown { get; }
+    private int _currentCooldown;
+    
     public virtual void Cast(Player target)
     {
         CooldownAbility();
     }
     public void ReduceCooldown()
     {
-        CurrentCooldown -= 1;
+        if (!IsReady)
+            _currentCooldown--;
     }
-
     private void CooldownAbility()
     {
-        CurrentCooldown = MaxCooldown;
+        _currentCooldown = MaxCooldown;
     }
 }
 
@@ -60,7 +60,7 @@ public abstract class AbilityWithEffectBase : AbilityBase
 public class AbilityAttack : AbilityBase
 {
     public override AbilityType Type => AbilityType.Attack;
-    public override int MaxCooldown => 0;
+    protected override int MaxCooldown => 0;
     private const int AttackDamage = 8;
 
     public override void Cast(Player target)
@@ -73,7 +73,7 @@ public class AbilityAttack : AbilityBase
 public class AbilityBarrier : AbilityWithEffectBase
 {
     public override AbilityType Type => AbilityType.Barrier;
-    public override int MaxCooldown => 4;
+    protected override int MaxCooldown => 4;
 
     protected override EffectBase CreateEffect() => new EffectBarrier();
 
@@ -95,7 +95,7 @@ public class AbilityBarrier : AbilityWithEffectBase
 public class AbilityRegeneration : AbilityWithEffectBase
 {
     public override AbilityType Type => AbilityType.Regeneration;
-    public override int MaxCooldown => 5;
+    protected override int MaxCooldown => 5;
 
     protected override EffectBase CreateEffect() => new EffectRegeneration();
 }
@@ -103,7 +103,7 @@ public class AbilityRegeneration : AbilityWithEffectBase
 public class AbilityFireball : AbilityWithEffectBase
 {
     public override AbilityType Type => AbilityType.Fireball;
-    public override int MaxCooldown => 6;
+    protected override int MaxCooldown => 6;
     private const int FireballDamage = 5;
 
     public override void Cast(Player target)
@@ -118,7 +118,7 @@ public class AbilityFireball : AbilityWithEffectBase
 public class AbilityCleanse : AbilityBase
 {
     public override AbilityType Type => AbilityType.Cleanse;
-    public override int MaxCooldown => 5;
+    protected override int MaxCooldown => 5;
 
     public override void Cast(Player target)
     {
