@@ -1,3 +1,4 @@
+using System.Linq;
 using R3;
 
 public enum AbilityType
@@ -32,39 +33,40 @@ public abstract class AbilityBase
     {
         CurrentCooldown -= 1;
     }
-    
+
     private void CooldownAbility()
     {
         CurrentCooldown = MaxCooldown;
     }
 }
 
-// public abstract class AbilityAttackBase : AbilityBase
-// {
-//     public abstract int AttackValue { get; }
-// }
-
 public abstract class AbilityWithEffectBase : AbilityBase
 {
-    public override AbilityType Type { get; }
-    public override int MaxCooldown { get; }
+    protected abstract EffectBase CreateEffect();
+
     public override void Cast(Player target)
     {
         base.Cast(target);
-        AddEffect(target);
+        var effect = CreateEffect();
+        target.AddEffect(effect);
+        effect.CurrentDuration.Where(duration => duration <= 0).Subscribe(_ =>
+        {
+            target.RemoveEffect(effect);
+            IsWaitingForEffectToExpire = false;
+        });
     }
-    protected abstract void AddEffect(Player target);
 }
 
 public class AbilityAttack : AbilityBase
 {
     public override AbilityType Type => AbilityType.Attack;
     public override int MaxCooldown => 0;
-    public override int AttackValue => 8;
+    private const int AttackDamage = 8;
+
     public override void Cast(Player target)
     {
         base.Cast(target);
-        target.ApplyDamage(AttackValue);
+        target.ApplyDamage(AttackDamage);
     }
 }
 
@@ -72,20 +74,21 @@ public class AbilityBarrier : AbilityWithEffectBase
 {
     public override AbilityType Type => AbilityType.Barrier;
     public override int MaxCooldown => 4;
+
+    protected override EffectBase CreateEffect() => new EffectBarrier();
+
     public override void Cast(Player target)
     {
         base.Cast(target);
-        AddEffect(target);
-    }
-    protected override void AddEffect(Player target)
-    {
-        EffectBarrier effectBarrier = new EffectBarrier();
-        target.AddEffect(effectBarrier);
-        effectBarrier.CurrentBarrier.Where(currentBarrier => currentBarrier <= 0).Subscribe(_ =>
+        var effectBarrier = target.Effects.OfType<EffectBarrier>().FirstOrDefault();
+        if (effectBarrier != null)
         {
-            target.RemoveEffect(effectBarrier);
-            IsWaitingForEffectToExpire = false;
-        });
+            effectBarrier.CurrentBarrier.Where(currentBarrier => currentBarrier <= 0).Subscribe(_ =>
+            {
+                target.RemoveEffect(effectBarrier);
+                IsWaitingForEffectToExpire = false;
+            });
+        }
     }
 }
 
@@ -93,55 +96,35 @@ public class AbilityRegeneration : AbilityWithEffectBase
 {
     public override AbilityType Type => AbilityType.Regeneration;
     public override int MaxCooldown => 5;
-    public override void Cast(Player target)
-    {
-        base.Cast(target);
-        target.AddEffect(new EffectRegeneration());
-    }
-    protected override void AddEffect(Player target)
-    {
-        EffectRegeneration effectRegeneration = new EffectRegeneration();
-        target.AddEffect(effectRegeneration);
-        effectRegeneration.CurrentDuration.Where(currentDuration => currentDuration <= 0).Subscribe(_ =>
-        {
-            target.RemoveEffect(effectRegeneration);
-            IsWaitingForEffectToExpire = false;
-        });
-    }
+
+    protected override EffectBase CreateEffect() => new EffectRegeneration();
 }
 
 public class AbilityFireball : AbilityWithEffectBase
 {
     public override AbilityType Type => AbilityType.Fireball;
     public override int MaxCooldown => 6;
-    public override int AttackValue => 5;
+    private const int FireballDamage = 5;
+
     public override void Cast(Player target)
     {
         base.Cast(target);
-        target.ApplyDamage(AttackValue);
-        target.AddEffect(new EffectBurning());
+        target.ApplyDamage(FireballDamage);
     }
-    protected override void AddEffect(Player target)
-    {
-        EffectBurning effectBurning = new EffectBurning();
-        target.AddEffect(effectBurning);
-        effectBurning.CurrentDuration.Where(currentDuration => currentDuration <= 0).Subscribe(_ =>
-        {
-            target.RemoveEffect(effectBurning);
-            IsWaitingForEffectToExpire = false;
-        });
-    }
+
+    protected override EffectBase CreateEffect() => new EffectBurning();
 }
 
 public class AbilityCleanse : AbilityBase
 {
     public override AbilityType Type => AbilityType.Cleanse;
     public override int MaxCooldown => 5;
+
     public override void Cast(Player target)
     {
         base.Cast(target);
-        EffectBase activeEffectBurning = target.Effects.Find(burning => burning is EffectBurning);
-        if (activeEffectBurning != null)
-            target.RemoveEffect(activeEffectBurning);
+        EffectBase effect = target.Effects.Find(e => e is EffectBurning);
+        if (effect != null)
+            target.RemoveEffect(effect);
     }
 }
