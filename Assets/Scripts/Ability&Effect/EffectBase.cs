@@ -12,7 +12,7 @@ public abstract class EffectBase
 {
     public abstract EffectType Type { get; }
     public abstract int MaxDuration { get; }
-    public ReactiveProperty<int> CurrentDuration { get; set; }
+    public ReactiveProperty<int> CurrentDuration { get; private set; }
     protected readonly Player Target;
 
     protected EffectBase(Player target)
