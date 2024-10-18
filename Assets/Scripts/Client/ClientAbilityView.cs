@@ -26,6 +26,7 @@ public class ClientAbilityView : MonoBehaviour
             bool isWaitingForEffect = ability.IsWaitingForEffect;
             string buttonText = GetButtonText(ability);
             bool interactable = !isWaitingForEffect && ability.IsReady;
+            // Debug.Log($"{playerAbilityKeyValuePair.Key}-{buttonText}-{isWaitingForEffect}-{ability.IsReady}");
 
             UpdateButton(playerAbilityKeyValuePair.Key, buttonText, interactable);
         }
@@ -60,6 +61,7 @@ public class ClientAbilityView : MonoBehaviour
             _ => throw new ArgumentOutOfRangeException()
         };
 
+        // Debug.Log($"{abilityType}-{buttonText}-{interactable}");
         button.GetComponentInChildren<TextMeshProUGUI>().text = buttonText;
         button.interactable = interactable;
     }

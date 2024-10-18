@@ -43,12 +43,12 @@ public abstract class AbilityBase
 
 public abstract class AbilityWithEffectBase : AbilityBase
 {
-    public bool IsWaitingForEffectToExpire { get; set; } = true;
-    protected abstract EffectBase CreateEffect(Player target);
+    public bool IsWaitingForEffectToExpire { get; set; }
 
     public override void Cast(Player target)
     {
         base.Cast(target);
+        IsWaitingForEffectToExpire = true;
         var effect = CreateEffect(target);
         target.AddEffect(effect);
         effect.CurrentDuration.Where(duration => duration <= 0).Subscribe(_ =>
@@ -57,6 +57,7 @@ public abstract class AbilityWithEffectBase : AbilityBase
         });
     }
     
+    protected abstract EffectBase CreateEffect(Player target);
     public override bool IsWaitingForEffect => IsWaitingForEffectToExpire;
 }
 
@@ -78,8 +79,6 @@ public class AbilityBarrier : AbilityWithEffectBase
     public override AbilityType Type => AbilityType.Barrier;
     protected override int MaxCooldown => 4;
 
-    protected override EffectBase CreateEffect(Player target) => new EffectBarrier(target);
-
     public override void Cast(Player target)
     {
         base.Cast(target);
@@ -92,14 +91,18 @@ public class AbilityBarrier : AbilityWithEffectBase
             });
         }
     }
+    
+    protected override EffectBase CreateEffect(Player target) => new EffectBarrier(target);
+    public override bool IsWaitingForEffect => IsWaitingForEffectToExpire;
 }
 
 public class AbilityRegeneration : AbilityWithEffectBase
 {
     public override AbilityType Type => AbilityType.Regeneration;
     protected override int MaxCooldown => 5;
-
+    
     protected override EffectBase CreateEffect(Player target) => new EffectRegeneration(target);
+    public override bool IsWaitingForEffect => IsWaitingForEffectToExpire;
 }
 
 public class AbilityFireball : AbilityWithEffectBase
@@ -115,6 +118,7 @@ public class AbilityFireball : AbilityWithEffectBase
     }
 
     protected override EffectBase CreateEffect(Player target) => new EffectBurning(target, this);
+    public override bool IsWaitingForEffect => IsWaitingForEffectToExpire;
 }
 
 public class AbilityCleanse : AbilityBase
