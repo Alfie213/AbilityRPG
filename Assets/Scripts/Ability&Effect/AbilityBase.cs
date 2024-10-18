@@ -28,7 +28,7 @@ public abstract class AbilityBase
     {
         CooldownAbility();
     }
-    public void ReduceCooldown()
+    public virtual void ReduceCooldown()
     {
         if (!IsReady)
             CurrentCooldown--;
@@ -56,7 +56,14 @@ public abstract class AbilityWithEffectBase : AbilityBase
             IsWaitingForEffectToExpire = false;
         });
     }
-    
+
+    public override void ReduceCooldown()
+    {
+        if (IsWaitingForEffectToExpire)
+            return;
+        base.ReduceCooldown();
+    }
+
     protected abstract EffectBase CreateEffect(Player target);
     public override bool IsWaitingForEffect => IsWaitingForEffectToExpire;
 }
