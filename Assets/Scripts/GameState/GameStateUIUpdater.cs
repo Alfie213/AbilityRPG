@@ -8,12 +8,12 @@ public class GameStateUIUpdater : MonoBehaviour
 {
     [SerializeField] private Client client;
     [SerializeField] private GameObject gameOverLayout;
-    
+
     [Header("Health")]
     [SerializeField] private TextMeshProUGUI playerHealthTMP;
     [SerializeField] private TextMeshProUGUI enemyHealthTMP;
-    
-    [Header("EnemyAbilities")] // ClientAbilityView displays the player's abilities.
+
+    [Header("EnemyAbilities")]
     [SerializeField] private Button enemyAttackButton;
     [SerializeField] private Button enemyBarrierButton;
     [SerializeField] private Button enemyRegenerationButton;
@@ -24,7 +24,7 @@ public class GameStateUIUpdater : MonoBehaviour
     private const string RegenerationButtonTMP = "Regeneration";
     private const string FireballButtonTMP = "Fireball";
     private const string CleanseButtonTMP = "Cleanse";
-    
+
     [Header("Effects")]
     [SerializeField] private Transform playerEffectsParent;
     [SerializeField] private Transform enemyEffectsParent;
@@ -44,19 +44,13 @@ public class GameStateUIUpdater : MonoBehaviour
 
     private void Handle_OnGameStateReceived(GameState gameState)
     {
-        // Debug.Log($"Player has {gameState.PlayerEffects.Count} effects.");
-        // Debug.Log($"Enemy has {gameState.EnemyEffects.Count} effects.");
-        switch (gameState.CurrentState)
+        if (gameState.CurrentState == GameStateType.Playing || gameState.CurrentState == GameStateType.GameOver)
         {
-            case GameStateType.Playing:
-                UpdateGameStateUI(gameState);
-                break;
-            case GameStateType.GameOver:
-                UpdateGameStateUI(gameState);
+            UpdateGameStateUI(gameState);
+            if (gameState.CurrentState == GameStateType.GameOver)
+            {
                 ShowGameOverLayout();
-                break;
-            default:
-                throw new ArgumentOutOfRangeException();
+            }
         }
     }
 
@@ -67,91 +61,59 @@ public class GameStateUIUpdater : MonoBehaviour
         DisplayAllEffects(gameState);
     }
 
-    private void ClearEffects() // Requires optimization to minimize the calls to Destroy and Instantiate.
+    private void ClearEffects(Transform effectsParent) // Requires optimization to minimize the calls to Destroy and Instantiate.
     {
-        foreach (Transform playerEffect in playerEffectsParent)
-            Destroy(playerEffect.gameObject);
-        foreach (Transform enemyEffect in enemyEffectsParent)
-            Destroy(enemyEffect.gameObject);
+        foreach (Transform effect in effectsParent)
+        {
+            Destroy(effect.gameObject);
+        }
     }
 
     private void DisplayHealth(GameState gameState)
     {
-        playerHealthTMP.text = gameState.Player.Health.ToString();
-        enemyHealthTMP.text = gameState.Enemy.Health.ToString();
+        playerHealthTMP.text = gameState.Player.Health.Value.ToString();
+        enemyHealthTMP.text = gameState.Enemy.Health.Value.ToString();
     }
 
     private void DisplayEnemyAbilities(GameState gameState)
     {
-        foreach (KeyValuePair<AbilityType,AbilityBase> enemyAbilityKeyValuePair in gameState.Enemy.Abilities)
-        {
-            switch (enemyAbilityKeyValuePair.Key)
-            {
-                case AbilityType.Attack:
-                    enemyAttackButton.GetComponentInChildren<TextMeshProUGUI>().text =
-                        enemyAbilityKeyValuePair.Value.CurrentCooldown <= 0
-                            ? AttackButtonTMP
-                            : enemyAbilityKeyValuePair.Value.CurrentCooldown.ToString();
-                    break;
-                case AbilityType.Barrier:
-                    enemyBarrierButton.GetComponentInChildren<TextMeshProUGUI>().text =
-                        enemyAbilityKeyValuePair.Value.CurrentCooldown <= 0
-                            ? BarrierButtonTMP
-                            : enemyAbilityKeyValuePair.Value.CurrentCooldown.ToString();
-                    break;
-                case AbilityType.Regeneration:
-                    enemyRegenerationButton.GetComponentInChildren<TextMeshProUGUI>().text =
-                        enemyAbilityKeyValuePair.Value.CurrentCooldown <= 0
-                            ? RegenerationButtonTMP
-                            : enemyAbilityKeyValuePair.Value.CurrentCooldown.ToString();
-                    break;
-                case AbilityType.Fireball:
-                    enemyFireballButton.GetComponentInChildren<TextMeshProUGUI>().text =
-                        enemyAbilityKeyValuePair.Value.CurrentCooldown <= 0
-                            ? FireballButtonTMP
-                            : enemyAbilityKeyValuePair.Value.CurrentCooldown.ToString();
-                    break;
-                case AbilityType.Cleanse:
-                    enemyCleanseButton.GetComponentInChildren<TextMeshProUGUI>().text =
-                        enemyAbilityKeyValuePair.Value.CurrentCooldown <= 0
-                            ? CleanseButtonTMP
-                            : enemyAbilityKeyValuePair.Value.CurrentCooldown.ToString();
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-        }
+        UpdateAbilityButton(enemyAttackButton, gameState.Enemy.Abilities[AbilityType.Attack], AttackButtonTMP);
+        UpdateAbilityButton(enemyBarrierButton, gameState.Enemy.Abilities[AbilityType.Barrier], BarrierButtonTMP);
+        UpdateAbilityButton(enemyRegenerationButton, gameState.Enemy.Abilities[AbilityType.Regeneration], RegenerationButtonTMP);
+        UpdateAbilityButton(enemyFireballButton, gameState.Enemy.Abilities[AbilityType.Fireball], FireballButtonTMP);
+        UpdateAbilityButton(enemyCleanseButton, gameState.Enemy.Abilities[AbilityType.Cleanse], CleanseButtonTMP);
+    }
+
+    private void UpdateAbilityButton(Button button, AbilityBase ability, string defaultText)
+    {
+        var buttonText = button.GetComponentInChildren<TextMeshProUGUI>();
+        buttonText.text = ability.CurrentCooldown <= 0 ? defaultText : ability.CurrentCooldown.ToString();
     }
 
     private void DisplayAllEffects(GameState gameState) // Requires optimization to minimize the calls to Destroy and Instantiate.
     {
-        ClearEffects();
-        
-        foreach (EffectBase playerEffect in gameState.Player.Effects)
+        ClearEffects(playerEffectsParent);
+        ClearEffects(enemyEffectsParent);
+
+        DisplayEffects(gameState.Player.Effects, playerEffectsParent);
+        DisplayEffects(gameState.Enemy.Effects, enemyEffectsParent);
+    }
+
+    private void DisplayEffects(List<EffectBase> effects, Transform effectsParent) // Requires optimization to minimize the calls to Destroy and Instantiate.
+    {
+        foreach (var effect in effects)
         {
-            GameObject effect = playerEffect.Type switch
+            GameObject effectUI = effect.Type switch
             {
-                EffectType.Barrier => Instantiate(barrierEffectUIPrefab, playerEffectsParent),
-                EffectType.Burning => Instantiate(burningEffectUIPrefab, playerEffectsParent),
-                EffectType.Regeneration => Instantiate(regenerationEffectUIPrefab, playerEffectsParent),
+                EffectType.Barrier => Instantiate(barrierEffectUIPrefab, effectsParent),
+                EffectType.Burning => Instantiate(burningEffectUIPrefab, effectsParent),
+                EffectType.Regeneration => Instantiate(regenerationEffectUIPrefab, effectsParent),
                 _ => throw new ArgumentOutOfRangeException()
             };
-            effect.GetComponentInChildren<TextMeshProUGUI>().text = playerEffect.CurrentDuration.ToString();
-        }
-        
-        foreach (EffectBase enemyEffect in gameState.Enemy.Effects)
-        {
-            GameObject effect = enemyEffect.Type switch
-            {
-                EffectType.Barrier => Instantiate(barrierEffectUIPrefab, enemyEffectsParent),
-                EffectType.Burning => Instantiate(burningEffectUIPrefab, enemyEffectsParent),
-                EffectType.Regeneration => Instantiate(regenerationEffectUIPrefab, enemyEffectsParent),
-                _ => throw new ArgumentOutOfRangeException()
-            };
-            effect.GetComponentInChildren<TextMeshProUGUI>().text = enemyEffect.CurrentDuration.ToString();
+            effectUI.GetComponentInChildren<TextMeshProUGUI>().text = effect.CurrentDuration.ToString();
         }
     }
-    
+
     private void ShowGameOverLayout()
     {
         gameOverLayout.SetActive(true);

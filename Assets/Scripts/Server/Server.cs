@@ -26,8 +26,11 @@ public class Server : MonoBehaviour, IGameServerAdapter
             )
             .Subscribe(health =>
             {
-                _gameState.CurrentState = GameStateType.GameOver;
-                Debug.Log("GameOver");
+                if (_gameState.CurrentState != GameStateType.GameOver)
+                {
+                    _gameState.CurrentState = GameStateType.GameOver;
+                    Debug.Log("GameOver");
+                }
             });
     }
 

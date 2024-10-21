@@ -24,7 +24,6 @@ public abstract class EffectBase
     private void InitializeCurrentDuration()
     {
         CurrentDuration = new ReactiveProperty<int>(MaxDuration);
-        Debug.Log(CurrentDuration.Value);
     }
     public virtual void ApplyEffect()
     {

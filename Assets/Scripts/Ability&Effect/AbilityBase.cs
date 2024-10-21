@@ -118,7 +118,7 @@ public class AbilityFireball : AbilityWithEffectBase
     protected override int MaxCooldown => 6;
     private const int FireballDamage = 5;
 
-    public override void Cast(IEntity target)
+    public override void Cast(IEntity target)                                       
     {
         base.Cast(target);
         target.ApplyDamage(FireballDamage);
